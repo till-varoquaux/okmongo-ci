@@ -1,0 +1,14 @@
+---
+Language:        Cpp
+BasedOnStyle:  Google
+BreakBeforeBinaryOperators: false
+NamespaceIndentation: Inner
+AccessModifierOffset: -4
+IndentWidth:     4
+ContinuationIndentWidth: 8
+PointerAlignment: Right
+Standard: Cpp11
+BinPackParameters: true
+AlwaysBreakBeforeMultilineStrings: false
+...
+
