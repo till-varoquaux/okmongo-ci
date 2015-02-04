@@ -1,0 +1,30 @@
+#!/bin/bash -e
+# Settings
+# http://blog.gockelhut.com/2014/09/automatic-documentation-publishing-with.html
+# http://benlimmer.com/2013/12/26/automatically-publish-javadoc-to-gh-pages-with-travis-ci/
+REPO_PATH=https://${GH_TOKEN}@github.com/till-varoquaux/okmongo-ci.git
+HTML_PATH=doxygen-doc/html
+DOC_BUILD_PATH="$(mktemp -d "${TMPDIR:-/tmp}/${PKG}.XXXXXXXXXX")"
+trap "rm -rf ${DOC_BUILD_PATH}" EXIT
+COMMIT_USER="Documentation Builder"
+COMMIT_EMAIL="noreply@example.com"
+CHANGESET=$(git rev-parse --verify HEAD)
+# Get a clean version of the HTML documentation repo.
+rm -rf ${HTML_PATH}
+mkdir -p ${HTML_PATH}
+git clone -b gh-pages "${REPO_PATH}" --single-branch ${DOC_BUILD_PATH}
+# rm all the files through git to prevent stale files.
+cd ${DOC_BUILD_PATH}
+if test x`git ls-files` != 'x'; then git rm -rf .; fi
+cd -
+# Generate the HTML documentation.
+make doxygen-doc
+# Create and commit the documentation repo.
+cp -rv ${HTML_PATH}/* ${DOC_BUILD_PATH}/
+cd ${DOC_BUILD_PATH}
+git add .
+git config --local user.name "${COMMIT_USER}"
+git config --local user.email "${COMMIT_EMAIL}"
+git commit -m "Automated documentation build for changeset ${CHANGESET}."
+git push origin gh-pages
+cd -

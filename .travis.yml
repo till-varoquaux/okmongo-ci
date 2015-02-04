@@ -1,0 +1,15 @@
+language: cpp
+compiler:
+- clang
+os:
+- linux
+before_install:
+- sudo apt-get update -qq
+- sudo apt-get install -y doxygen python-yaml lcov
+- gem install coveralls-lcov
+script: "./autogen.sh && ./configure --enable-coverage && make"
+after_success:
+- "./config/publish-doxygen"
+env:
+  global:
+    secure: oBuJe2RwfKqDNTpRT5fiVLz4UOpmb3vqmIahRk1HTDkSiWGsTaPKq6Dn2WXIjLi86WQ7oPd8Gb0MIxx3YiYsmRj09RF6CNFPUfMg3Qa6CoK/FBga+wd8uLFvWcbLDK3VbNBKOzlf33j6y3/gWLPWFnkEkfyl9WM5MtMzmB1HAa4=
