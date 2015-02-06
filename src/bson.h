@@ -28,7 +28,7 @@ enum class BsonTag : signed char {
     kUtf8 = '\x02',         ///< UTF8 string
     kDocument = '\x03',     ///< Embedded document
     kArray = '\x04',        ///< Array
-    kBinData = '\x05',      ///< Binary data (Not supported)
+    kBindata = '\x05',      ///< Binary data
     kObjectId = '\x07',     ///< Mongo Object id
     kBool = '\x08',         ///< Boolean
     kUtcDatetime = '\x09',  ///< UTC datetime (seconds since epoch)
@@ -37,7 +37,9 @@ enum class BsonTag : signed char {
     kJs = '\x0d',           ///< Javascript code (Not supported)
     kScopedJs = '\x0f',     ///< Scoped Javascript code (Not supported)
     kInt32 = '\x10',        ///< 32 bit integer
-    kTimestamp = '\x11',    ///< Timestamp (Not supported)
+    kTimestamp = '\x11',    ///< Timestamp (Used internally by mongo in the
+                            /// logs. Use a UtcDatetime if you want a real
+                            /// timestamp).
     kInt64 = '\x12',        ///< 64 bit integer
     kMinKey = -1,           ///< Min key
                             // The bson spec says '\xff' but that is either 255
@@ -70,8 +72,8 @@ struct KeyHelper {};
  * A helper class to write bson values.
  *
  * This class writes to an internally managed buffer (which can be read through
- * `Data()`. This buffer is the only thing that needs to get allocated in this
- * class.
+ * `data()`. This buffer is the only thing that needs to get allocated in
+ * this class.
  *
  * @note this driver only works on little endian architectures.
  * @todo use allocators
@@ -306,10 +308,8 @@ protected:
         kReadInt64,
         kReadDouble,
         kReadBool,
-        kReadStringLen,
         kReadString,
         kReadStringTerm,
-        kReadDocument,
         kReadObjectId,
         kDone,
         kError,
@@ -342,8 +342,9 @@ public:
      *
      * Override this via CRTP to define custom parsers that start in a different
      * State.
+     * (Initially set to int32 for the length of a document).
      */
-    static constexpr State kInitialState = State::kReadDocument;
+    static constexpr State kInitialState = State::kReadInt32;
 
     BsonReader();
 
@@ -418,12 +419,6 @@ protected:
     const char *ConsumeValueDouble(const char *s, const char *end);
     const char *ConsumeValueStringTerm(const char *s, const char *end);
     const char *ConsumeValueString(const char *s, const char *end);
-    const char *ConsumeValueStringLen(const char *s, const char *end);
-    const char *ConsumeValueStringLenCnt(const char *s, const char *end,
-                                         int32_t len);
-    const char *ConsumeValueDocumentCnt(const char *s, const char *end,
-                                        int32_t);
-    const char *ConsumeValueDocument(const char *s, const char *end);
     const char *ConsumeValue(const char *s, const char *end);
     const char *ConsumeValueObjectId(const char *s, const char *end);
     const char *ConsumeFieldName(const char *s, const char *end);
@@ -809,17 +804,12 @@ int32_t BsonReader<T>::Consume(const char *s, int32_t len) {
         case State::kReadDouble:
             end = ConsumeValueDouble(s, s + len);
             break;
-        case State::kReadStringLen:
-            end = ConsumeValueStringLen(s, s + len);
-            break;
         case State::kReadString:
             end = ConsumeValueString(s, s + len);
             break;
         case State::kReadStringTerm:
             end = ConsumeValueStringTerm(s, s + len);
             break;
-        case State::kReadDocument:
-            end = ConsumeValueDocument(s, s + len);
             break;
         case State::kReadObjectId:
             end = ConsumeValueObjectId(s, s + len);
@@ -870,8 +860,29 @@ const char *BsonReader<T>::ConsumeFieldTyp(const char *s, const char *end) {
 template <typename T>
 const char *BsonReader<T>::ConsumeValueInt32Cnt(const char *s, const char *end,
                                                 int32_t t) {
-    impl().EmitInt32(t);
-    return ConsumeFieldTyp(s, end);
+    switch (typ_) {
+        case BsonTag::kDocument:
+            ++depth_;
+            impl().EmitOpenDoc();
+            return ConsumeFieldTyp(s, end);
+        case BsonTag::kArray:
+            ++depth_;
+            impl().EmitOpenArray();
+            return ConsumeFieldTyp(s, end);
+        case BsonTag::kInt32:
+            impl().EmitInt32(t);
+            return ConsumeFieldTyp(s, end);
+        case BsonTag::kUtf8:
+        case BsonTag::kJs:
+            if (t < 1) {
+                return Error("Negative length!");
+            }
+            partial_ = t - 1;
+            return ConsumeValueString(s, end);
+        default:
+            assert(false);
+            return Error("internal error");
+    }
 }
 
 template <typename T>
@@ -941,7 +952,7 @@ const char *BsonReader<T>::ConsumeValueStringTerm(const char *s,
     if (*s != '\000') {
         return Error("expected null byte");
     }
-    return (ConsumeFieldTyp(s + 1, end));
+    return ConsumeFieldTyp(s + 1, end);
 }
 
 template <typename T>
@@ -971,55 +982,21 @@ const char *BsonReader<T>::ConsumeValueString(const char *s, const char *end) {
     }
     DispatchStringData(s, partial_);
     DispatchStringData(nullptr, 0);
-    return ConsumeValueStringTerm(s + partial_, end);
-}
-
-template <typename T>
-const char *BsonReader<T>::ConsumeValueStringLenCnt(const char *s,
-                                                    const char *end,
-                                                    int32_t len) {
-    if (len < 1) {
-        return Error("Negative length!");
+    if (typ_ == BsonTag::kBindata) {
+        return ConsumeFieldTyp(s + partial_, end);
+    } else {
+        return ConsumeValueStringTerm(s + partial_, end);
     }
-    partial_ = len - 1;
-    return ConsumeValueString(s, end);
-}
-
-template <typename T>
-const char *BsonReader<T>::ConsumeValueStringLen(const char *s,
-                                                 const char *end) {
-    return ReadVal<int32_t, State::kReadStringLen,
-                   &BsonReader::ConsumeValueStringLenCnt>(s, end);
-}
-
-template <typename T>
-const char *BsonReader<T>::ConsumeValueDocumentCnt(const char *s,
-                                                   const char *end, int32_t) {
-    ++depth_;
-    switch (typ_) {
-        case BsonTag::kDocument:
-            impl().EmitOpenDoc();
-            break;
-        case BsonTag::kArray:
-            impl().EmitOpenArray();
-            break;
-        default:
-            assert(false);
-    }
-    return ConsumeFieldTyp(s, end);
-}
-
-template <typename T>
-const char *BsonReader<T>::ConsumeValueDocument(const char *s,
-                                                const char *end) {
-    return ReadVal<int32_t, State::kReadDocument,
-                   &BsonReader::ConsumeValueDocumentCnt>(s, end);
 }
 
 template <typename T>
 const char *BsonReader<T>::ConsumeValue(const char *s, const char *end) {
     switch (typ_) {
         case BsonTag::kInt32:
+        case BsonTag::kArray:
+        case BsonTag::kDocument:
+        case BsonTag::kUtf8:
+        case BsonTag::kJs:
             return ConsumeValueInt32(s, end);
         case BsonTag::kInt64:
         case BsonTag::kUtcDatetime:
@@ -1032,15 +1009,9 @@ const char *BsonReader<T>::ConsumeValue(const char *s, const char *end) {
         case BsonTag::kNull:
             impl().EmitNull();
             return ConsumeFieldTyp(s, end);
-        case BsonTag::kUtf8:
-        case BsonTag::kJs:
-            return ConsumeValueStringLen(s, end);
-        case BsonTag::kArray:
-        case BsonTag::kDocument:
-            return ConsumeValueDocument(s, end);
         case BsonTag::kObjectId:
             return ConsumeValueObjectId(s, end);
-        case BsonTag::kBinData:
+        case BsonTag::kBindata:
         case BsonTag::kRegexp:
         case BsonTag::kScopedJs:
             return Error("Field type no handled");

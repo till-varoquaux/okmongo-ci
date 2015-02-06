@@ -242,15 +242,6 @@ inline bool Print(const BsonValue &v, BsonDocDumper *d) {
             d->EmitClose();
         }
             return true;
-        case BsonTag::kUtf8: {
-            int32_t sz = v.size();
-            if (sz < 5) {
-                return false;
-            }
-            d->EmitUtf8(v.data() + sizeof(int32_t), sz - 1 - 4);
-            d->EmitUtf8(nullptr, 0);
-            return true;
-        }
         case BsonTag::kObjectId:
             d->EmitObjectId(v.data());
             return true;
@@ -260,6 +251,15 @@ inline bool Print(const BsonValue &v, BsonDocDumper *d) {
         case BsonTag::kTimestamp:
             d->EmitTimestamp(v.Get<int64_t, BsonTag::kTimestamp>());
             return true;
+         case BsonTag::kUtf8: {
+            int32_t sz = v.size();
+            if (sz < 5) {
+                return false;
+            }
+            d->EmitUtf8(v.data() + sizeof(int32_t), sz - 1 - 4);
+            d->EmitUtf8(nullptr, 0);
+            return true;
+        }
         case BsonTag::kJs: {
             int32_t sz = v.size();
             if (sz < 5) {
@@ -269,7 +269,7 @@ inline bool Print(const BsonValue &v, BsonDocDumper *d) {
             d->EmitJs(nullptr, 0);
             return true;
         }
-        case BsonTag::kBinData:
+        case BsonTag::kBindata:
         case BsonTag::kScopedJs:
         case BsonTag::kRegexp:
         case BsonTag::kMinKey:

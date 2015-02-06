@@ -25,7 +25,7 @@ BsonTag ToBsonTag(char c) {
         case BsonTag::kUtf8:
         case BsonTag::kDocument:
         case BsonTag::kArray:
-        case BsonTag::kBinData:
+        case BsonTag::kBindata:
         case BsonTag::kObjectId:
         case BsonTag::kBool:
         case BsonTag::kUtcDatetime:
@@ -45,6 +45,23 @@ BsonTag ToBsonTag(char c) {
 }
 
 /**
+ * How much bytes must we add to the `length` to get the full field length
+ * (including terminating null etc)...
+ */
+static int32_t TagLengthOffset(BsonTag tag) {
+    switch (tag) {
+    case BsonTag::kJs:
+    case BsonTag::kUtf8:
+        return 4; // length
+    case BsonTag::kBindata:
+        return 5; // length + subtype
+    case BsonTag::kDocument:
+    case BsonTag::kArray:
+    default:
+        return 0;
+    }
+}
+/**
  * @returns -1 in case of error.
  */
 static int32_t GetValueLength(BsonTag tag, const char *data, int32_t size) {
@@ -53,18 +70,9 @@ static int32_t GetValueLength(BsonTag tag, const char *data, int32_t size) {
     switch (tag) {
         case BsonTag::kDocument:
         case BsonTag::kArray:
-            if (size < static_cast<int32_t>(sizeof(int32_t)) + 1) {
-                return -1;
-            }
-            std::memcpy(&res, data, sizeof(int32_t));
-            if (res <= 0) {
-                return -1;
-            }
-            null_terminated = true;
-            break;
         case BsonTag::kJs:
         case BsonTag::kUtf8:
-        case BsonTag::kBinData:
+        case BsonTag::kBindata:
             if (size < static_cast<int32_t>(sizeof(int32_t)) + 1) {
                 return -1;
             }
@@ -72,8 +80,8 @@ static int32_t GetValueLength(BsonTag tag, const char *data, int32_t size) {
             if (res <= 0) {
                 return -1;
             }
-            res += 4;
-            null_terminated = true;
+            res += TagLengthOffset(tag);
+            null_terminated = (tag != BsonTag::kBindata);
             break;
         case BsonTag::kDouble:
             res = sizeof(double);

@@ -165,7 +165,7 @@ public:
 
     // CRTP specializable
     const char *DocumentStart(const char *s, const char *end) {
-        return Parent::ConsumeValueDocument(s, end);
+        return Parent::ConsumeValueInt32(s, end);
     }
 
     const char *DocumentDone(const char *s, const char *end) {
@@ -188,8 +188,6 @@ public:
 //------------------------------------------------------------------------------
 /**
  * This is a specialised response reader that read in `BsonValue`'s
- *
- *
  */
 template <typename Implementation>
 class BsonValueResponseReader : public ResponseReader<Implementation> {
