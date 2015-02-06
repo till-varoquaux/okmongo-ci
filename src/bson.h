@@ -10,7 +10,6 @@
 #include <cassert>
 #include <cstddef>
 
-#include <iostream>
 namespace okmongo {
 
 /**
@@ -46,6 +45,32 @@ enum class BsonTag : signed char {
                             // or -1 depending on whether the compiler uses
                             // signed char or unsigned char for chars...
     kMaxKey = 127           ///< Max key
+};
+
+/**
+ * Subtype for binary data.
+ */
+enum class BindataSubtype : unsigned char {
+    kGeneric = '\x00',   ///< Generic binary subtype
+    kFunction = '\x01',  ///< Function
+    kBinary = '\x02',    ///< Binary (Old)
+                         /// This used to be the default subtype, but was
+                         /// deprecated in favor of \\x00. Drivers and tools
+                         /// should be sure to handle \\x02 appropriately.
+                         /// The structure of the binary data (the byte* array
+                         /// in the binary non-terminal) must be an int32
+                         /// followed by a (byte*). The int32 is the number of
+                         /// bytes in the repetition.
+    kUuidOld = '\x03',   ///< UUID (Old)
+                         /// This used to be the UUID subtype, but was
+                         /// deprecated in favor of \\x04.
+                         /// Drivers and tools for languages with a native UUID
+                         /// type should handle \\x03 appropriately.
+    kUuid = '\x04',      ///< UUID
+    kMd5 = '\x05',       ///< MD5
+    kMinCustom = 0x80,   ///< Lowest tag acceptable for user defined subtypes.
+                         /// The binary data can be anything.
+    kMaxCustom = 0xFF
 };
 
 /**
@@ -171,6 +196,9 @@ public:
     template <typename K>
     void ElementObjectId(const K key, const char val[kObjectIdLen]);
 
+    template <typename K>
+    void ElementBindata(const K key, const BindataSubtype, const char *value,
+                        const int32_t value_len);
     /** @} */
 
     /// Writes the current len of the buffer in the first field (as an int32).
@@ -310,6 +338,7 @@ protected:
         kReadBool,
         kReadString,
         kReadStringTerm,
+        kReadBinSubtype,
         kReadObjectId,
         kDone,
         kError,
@@ -414,6 +443,7 @@ protected:
     const char *ConsumeValueInt32(const char *s, const char *end);
     const char *ConsumeValueInt64Cnt(const char *s, const char *end, int64_t t);
     const char *ConsumeValueInt64(const char *s, const char *end);
+    const char *ConsumeValueBinSubtype(const char *s, const char *end);
     const char *ConsumeValueBool(const char *s, const char *end);
     const char *ConsumeValueDoubleCnt(const char *s, const char *end, double d);
     const char *ConsumeValueDouble(const char *s, const char *end);
@@ -460,6 +490,11 @@ protected:
     // Will be called back with a length of 0 when done
     void EmitUtf8(const char *, int32_t) {}
 
+    void EmitBindataSubtype(BindataSubtype) {}
+
+    // A length of zero means that it's the last call
+    void EmitBindata(const char *, int32_t) {}
+
     void EmitJs(const char *, int32_t) {}
 
     void EmitUtcDatetime(const int64_t) {}
@@ -501,6 +536,7 @@ public:
     int32_t GetInt32() const;
     double GetDouble() const;
     bool GetBool() const;
+    BindataSubtype GetBinSubstype() const;
 };
 
 /**
@@ -603,8 +639,20 @@ void BsonWriter::ElementObjectId(const K key, const char value[kObjectIdLen]) {
 }
 
 template <typename K>
+void BsonWriter::ElementBindata(const K key, const BindataSubtype st,
+                                const char *value, const int32_t value_len) {
+    const int32_t flen = 4 + 1 + value_len;
+    char *out = StartField(BsonTag::kBindata, key, flen);
+    std::memcpy(out, &value_len, 4);
+    out[4] = static_cast<char>(st);
+    std::memcpy(out + 5, value, static_cast<size_t>(value_len));
+    pos_ += flen;
+}
+
+
+template <typename K>
 void BsonWriter::Element(const K key, std::nullptr_t) {
-    StartField(BsonTag::kNull, key, 0);
+     StartField(BsonTag::kNull, key, 0);
 }
 
 template <typename K>
@@ -813,6 +861,8 @@ int32_t BsonReader<T>::Consume(const char *s, int32_t len) {
         case State::kReadStringTerm:
             end = ConsumeValueStringTerm(s, s + len);
             break;
+        case State::kReadBinSubtype:
+            end = ConsumeValueBinSubtype(s, s + len);
             break;
         case State::kReadObjectId:
             end = ConsumeValueObjectId(s, s + len);
@@ -882,6 +932,12 @@ const char *BsonReader<T>::ConsumeValueInt32Cnt(const char *s, const char *end,
             }
             partial_ = t - 1;
             return ConsumeValueString(s, end);
+        case BsonTag::kBindata:
+            if (t < 0) {
+                return Error("Negative length!");
+            }
+            partial_ = t;
+            return ConsumeValueBinSubtype(s, end);
         default:
             assert(false);
             return Error("internal error");
@@ -959,6 +1015,17 @@ const char *BsonReader<T>::ConsumeValueStringTerm(const char *s,
 }
 
 template <typename T>
+const char *BsonReader<T>::ConsumeValueBinSubtype(const char *s,
+                                                  const char *end) {
+    if (s == end) {
+        state_ = State::kReadBinSubtype;
+        return end;
+    }
+    impl().EmitBindataSubtype(BindataSubtype(*s));
+    return ConsumeValueString(s + 1, end);
+}
+
+template <typename T>
 void BsonReader<T>::DispatchStringData(const char *s, const int32_t inlen) {
     switch (typ_) {
         case BsonTag::kUtf8:
@@ -966,6 +1033,9 @@ void BsonReader<T>::DispatchStringData(const char *s, const int32_t inlen) {
             break;
         case BsonTag::kJs:
             impl().EmitJs(s, inlen);
+            break;
+        case BsonTag::kBindata:
+            impl().EmitBindata(s, inlen);
             break;
         default:
             assert(false);
@@ -986,7 +1056,9 @@ const char *BsonReader<T>::ConsumeValueString(const char *s, const char *end) {
     DispatchStringData(s, partial_);
     DispatchStringData(nullptr, 0);
     if (typ_ == BsonTag::kBindata) {
-        return ConsumeFieldTyp(s + partial_, end);
+        s += partial_;
+        partial_ = 0;
+        return ConsumeFieldTyp(s, end);
     } else {
         return ConsumeValueStringTerm(s + partial_, end);
     }
@@ -1000,6 +1072,7 @@ const char *BsonReader<T>::ConsumeValue(const char *s, const char *end) {
         case BsonTag::kDocument:
         case BsonTag::kUtf8:
         case BsonTag::kJs:
+        case BsonTag::kBindata:
             return ConsumeValueInt32(s, end);
         case BsonTag::kInt64:
         case BsonTag::kUtcDatetime:
@@ -1014,7 +1087,6 @@ const char *BsonReader<T>::ConsumeValue(const char *s, const char *end) {
             return ConsumeFieldTyp(s, end);
         case BsonTag::kObjectId:
             return ConsumeValueObjectId(s, end);
-        case BsonTag::kBindata:
         case BsonTag::kRegexp:
         case BsonTag::kScopedJs:
             return Error("Field type no handled");

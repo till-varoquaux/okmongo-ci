@@ -22,6 +22,7 @@ class BsonDumper : public Parent {
     std::ostream *tgt_;
     std::stack<BsonTag> stack_;
     bool in_lit_ = false;
+    BindataSubtype subtype_;
     bool InArray() { return stack_.top() == BsonTag::kArray; }
 
     void PrintStringFrag(const char *s, int32_t len) {
@@ -132,6 +133,22 @@ public:
             *tgt_ << "\"";
             in_lit_ = false;
         }
+    }
+
+    void EmitBindata(const char *s, const int32_t len) {
+        assert(len >= 0);
+        PrintStringFrag(s, len);
+        if (len == 0) {
+            char buff[3];
+            snprintf(buff, 3, "%.2x", static_cast<unsigned char>(subtype_));
+            *tgt_ << "\", \"$type\": \"" << buff << "\" }";
+        }
+    }
+
+    // TODO: figure out how this should actually be printed
+    void EmitBindataSubtype(BindataSubtype st) {
+        subtype_ = st;
+        *tgt_ << "{ \"$binary\": \"";
     }
 
     void EmitJs(const char *s, const int32_t len) {
@@ -248,6 +265,10 @@ inline bool Print(const BsonValue &v, BsonDocDumper *d) {
             d->EmitJs(nullptr, 0);
             return true;
         case BsonTag::kBindata:
+            d->EmitBindataSubtype(v.GetBinSubstype());
+            d->EmitBindata(v.GetData(), v.GetDataSize());
+            d->EmitBindata(nullptr, 0);
+            return true;
         case BsonTag::kScopedJs:
         case BsonTag::kRegexp:
         case BsonTag::kMinKey:

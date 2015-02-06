@@ -176,6 +176,13 @@ double BsonValue::GetDouble() const {
     }
 }
 
+BindataSubtype BsonValue::GetBinSubstype() const {
+    if (tag_ == BsonTag::kBindata) {
+        return static_cast<BindataSubtype>(data_[4]);
+    }
+    return BindataSubtype::kGeneric;
+}
+
 bool BsonValue::GetBool() const {
     return GetV<char, BsonTag::kBool, 0>(*this, data_) == 1;
 }
@@ -187,6 +194,8 @@ const char *BsonValue::GetData() const {
         case BsonTag::kUtf8:
         case BsonTag::kJs:
             return data_ + 4;
+        case BsonTag::kBindata:
+            return data_ + 5;
         default:
             return nullptr;
     }
@@ -198,6 +207,7 @@ int32_t BsonValue::GetDataSize() const {
             return 9;
         case BsonTag::kUtf8:
         case BsonTag::kJs:
+        case BsonTag::kBindata:
             return size_ - 5;
         default:
             return -1;

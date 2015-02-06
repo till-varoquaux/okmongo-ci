@@ -1,6 +1,7 @@
 #include "bson.h"
 #include "bson_dumper.h"
 #include <sstream>
+#include <iostream>
 
 static std::string SpoonFeed(const std::string &s) {
     constexpr size_t kChunkSize = 5;
@@ -41,12 +42,12 @@ static std::string PrintBsonValue(const std::string &s) {
 // kUtcDatetime
 // kNull
 // kTimestamp
+// kJs
+// kBinData
 //============================
 // Still untested:
 //
-// kBinData
 // kRegexp
-// kJs
 // kScopedJs
 //============================
 // kMinKey
@@ -69,6 +70,11 @@ int main() {
         w.ElementUtcDatetime("date", time(nullptr));
         w.ElementObjectId("objectid", oid);
         w.ElementTimestamp("timestamp", 0);
+        {
+            const char* bin = "Some bin data 123";
+            w.ElementBindata("bin_data", okmongo::BindataSubtype::kGeneric, bin,
+                             static_cast<int>(strlen(bin)));
+        }
         w.PushArray("long_array_name");
         {
             w.Element(0, "world");
