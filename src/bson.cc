@@ -50,15 +50,15 @@ BsonTag ToBsonTag(char c) {
  */
 static int32_t TagLengthOffset(BsonTag tag) {
     switch (tag) {
-    case BsonTag::kJs:
-    case BsonTag::kUtf8:
-        return 4; // length
-    case BsonTag::kBindata:
-        return 5; // length + subtype
-    case BsonTag::kDocument:
-    case BsonTag::kArray:
-    default:
-        return 0;
+        case BsonTag::kJs:
+        case BsonTag::kUtf8:
+            return 4;  // length
+        case BsonTag::kBindata:
+            return 5;  // length + subtype
+        case BsonTag::kDocument:
+        case BsonTag::kArray:
+        default:
+            return 0;
     }
 }
 /**
@@ -128,6 +128,80 @@ BsonValue::BsonValue(const char *data, int32_t size, BsonTag tag)
     data_ = data;
     tag_ = tag;
     size_ = real_size;
+}
+
+namespace {
+    template <typename T, BsonTag Tgt, T fallback>
+    T GetV(const BsonValue &b, const char *data) {
+        if (b.Tag() != Tgt) {
+            return fallback;
+        }
+        T retval;
+        std::memcpy(&retval, data, sizeof(T));
+        return retval;
+    }  // namespace
+
+    template <typename T, BsonTag Tgt>
+    bool GetV(const BsonValue &b, const char *data, T *out) {
+        if (b.Tag() != Tgt) {
+            return false;
+        }
+        std::memcpy(out, data, sizeof(T));
+        return true;
+    }
+}  // namespace
+
+int64_t BsonValue::GetInt64() const {
+    return GetV<int64_t, BsonTag::kInt64, -1>(*this, data_);
+}
+
+int64_t BsonValue::GetTimestamp() const {
+    return GetV<int64_t, BsonTag::kTimestamp, -1>(*this, data_);
+}
+
+int64_t BsonValue::GetUtcDatetime() const {
+    return GetV<int64_t, BsonTag::kUtcDatetime, -1>(*this, data_);
+}
+
+int32_t BsonValue::GetInt32() const {
+    return GetV<int32_t, BsonTag::kInt32, -1>(*this, data_);
+}
+
+double BsonValue::GetDouble() const {
+    double retv;
+    if (!GetV<double, BsonTag::kDouble>(*this, data_, &retv)) {
+        return std::numeric_limits<double>::quiet_NaN();
+    } else {
+        return retv;
+    }
+}
+
+bool BsonValue::GetBool() const {
+    return GetV<char, BsonTag::kBool, 0>(*this, data_) == 1;
+}
+
+const char *BsonValue::GetData() const {
+    switch (tag_) {
+        case BsonTag::kObjectId:
+            return data_;
+        case BsonTag::kUtf8:
+        case BsonTag::kJs:
+            return data_ + 4;
+        default:
+            return nullptr;
+    }
+}
+
+int32_t BsonValue::GetDataSize() const {
+    switch (tag_) {
+        case BsonTag::kObjectId:
+            return 9;
+        case BsonTag::kUtf8:
+        case BsonTag::kJs:
+            return size_ - 5;
+        default:
+            return -1;
+    }
 }
 
 // For documents...
@@ -200,11 +274,8 @@ void BsonValueIt::MoveTo(const char *curs) {
             return Invalidate();
         }
     }
-
     ++curs;
-
-    auto size =
-            GetValueLength(tag, curs, static_cast<int32_t>(end_ - curs) - 1);
+    auto size = GetValueLength(tag, curs, static_cast<int32_t>(end_ - curs));
 
     if (size == -1) {
         return Invalidate();
@@ -219,12 +290,12 @@ void BsonValueIt::MoveTo(const char *curs) {
 BsonValueIt::BsonValueIt() { Invalidate(); }
 
 BsonValueIt::BsonValueIt(const BsonValue &v) {
-    if (v.tag() != BsonTag::kArray && v.tag() != BsonTag::kDocument) {
+    if (v.Tag() != BsonTag::kArray && v.Tag() != BsonTag::kDocument) {
         Invalidate();
         return;
     }
-    end_ = v.data() + v.size();
-    MoveTo(v.data() + sizeof(int32_t));
+    end_ = v.data_ + v.size_;
+    MoveTo(v.data_ + sizeof(int32_t));
 }
 
 void BsonValueIt::next() {

@@ -479,10 +479,12 @@ protected:
     BsonTag tag_;
     int32_t size_;
 
+    friend class BsonValueIt;
+
 public:
-    const char *data() const { return data_; }
-    int32_t size() const { return size_; }
-    BsonTag tag() const { return tag_; }
+    BsonTag Tag() const { return tag_; }
+    int32_t GetDataSize() const;
+    const char *GetData() const;
 
     BsonValue() : data_(nullptr), tag_(BsonTag::kMinKey), size_(0) {}
     BsonValue(const char *data, int32_t size, BsonTag tag = BsonTag::kDocument);
@@ -493,11 +495,12 @@ public:
     // Only for documents...
     BsonValue GetField(const char *needle) const;
 
-    template <typename T, BsonTag tag>
-    bool Get(T *dst) const;
-
-    template <typename T, BsonTag tag>
-    T Get() const;
+    int64_t GetInt64() const;
+    int64_t GetTimestamp() const;
+    int64_t GetUtcDatetime() const;
+    int32_t GetInt32() const;
+    double GetDouble() const;
+    bool GetBool() const;
 };
 
 /**
@@ -1095,24 +1098,4 @@ const char *BsonReader<Implementation>::ReadVal(const char *s,
 }
 
 inline bool BsonValueIt::Done() const { return tag_ == BsonTag::kMinKey; }
-
-template <typename T, BsonTag Tag>
-bool BsonValue::Get(T *dst) const {
-    if (tag() != Tag || size() != sizeof(T)) {
-        return false;
-    }
-    std::memcpy(dst, data(), sizeof(T));
-    return true;
-}
-
-template <typename T, BsonTag Tag>
-T BsonValue::Get() const {
-    T retval;
-    const bool ok = Get<T, Tag>(&retval);
-    if (!ok) {
-        return T{};
-    }
-    return retval;
-}
-
 }  // namespace okmongo

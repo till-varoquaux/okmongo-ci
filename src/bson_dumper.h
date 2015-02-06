@@ -195,43 +195,37 @@ public:
 };
 
 inline bool Print(const BsonValue &v, BsonDocDumper *d) {
-    switch (v.tag()) {
+    BsonTag tag = v.Tag();
+    switch (tag) {
         case BsonTag::kDouble:
-            d->EmitDouble(v.Get<double, BsonTag::kDouble>());
+            d->EmitDouble(v.GetDouble());
             return true;
         case BsonTag::kInt32:
-            d->EmitInt32(v.Get<int32_t, BsonTag::kInt32>());
+            d->EmitInt32(v.GetInt32());
             return true;
         case BsonTag::kInt64:
-            d->EmitInt64(v.Get<int64_t, BsonTag::kInt64>());
+            d->EmitInt64(v.GetInt64());
             return true;
-        case BsonTag::kBool: {
-            signed char c;
-            if (!v.Get<signed char, BsonTag::kBool>(&c) || (c != 0 && c != 1)) {
-                return false;
-            };
-            d->EmitBool(c == 1);
+        case BsonTag::kUtcDatetime:
+            d->EmitUtcDatetime(v.GetUtcDatetime());
             return true;
-        }
+        case BsonTag::kTimestamp:
+            d->EmitTimestamp(v.GetTimestamp());
+            return true;
+        case BsonTag::kBool:
+            d->EmitBool(v.GetBool());
+            return true;
         case BsonTag::kNull:
             d->EmitNull();
             return true;
-        case BsonTag::kDocument: {
-            BsonValueIt it(v);
-            d->EmitOpenDoc();
-            while (!it.Done()) {
-                d->EmitFieldName(it.key(),
-                                 static_cast<int32_t>(strlen(it.key())));
-                d->EmitFieldName(nullptr, 0);
-                Print(it, d);
-                it.next();
-            }
-            d->EmitClose();
-        }
-            return true;
+        case BsonTag::kDocument:
         case BsonTag::kArray: {
             BsonValueIt it(v);
-            d->EmitOpenArray();
+            if (tag == BsonTag::kArray) {
+                d->EmitOpenArray();
+            } else {
+                d->EmitOpenDoc();
+            }
             while (!it.Done()) {
                 d->EmitFieldName(it.key(),
                                  static_cast<int32_t>(strlen(it.key())));
@@ -243,32 +237,16 @@ inline bool Print(const BsonValue &v, BsonDocDumper *d) {
         }
             return true;
         case BsonTag::kObjectId:
-            d->EmitObjectId(v.data());
+            d->EmitObjectId(v.GetData());
             return true;
-        case BsonTag::kUtcDatetime:
-            d->EmitUtcDatetime(v.Get<int64_t, BsonTag::kUtcDatetime>());
-            return true;
-        case BsonTag::kTimestamp:
-            d->EmitTimestamp(v.Get<int64_t, BsonTag::kTimestamp>());
-            return true;
-         case BsonTag::kUtf8: {
-            int32_t sz = v.size();
-            if (sz < 5) {
-                return false;
-            }
-            d->EmitUtf8(v.data() + sizeof(int32_t), sz - 1 - 4);
+        case BsonTag::kUtf8:
+            d->EmitUtf8(v.GetData(), v.GetDataSize());
             d->EmitUtf8(nullptr, 0);
             return true;
-        }
-        case BsonTag::kJs: {
-            int32_t sz = v.size();
-            if (sz < 5) {
-                return false;
-            }
-            d->EmitJs(v.data() + sizeof(int32_t), sz - 1 - 4);
+        case BsonTag::kJs:
+            d->EmitJs(v.GetData(), v.GetDataSize());
             d->EmitJs(nullptr, 0);
             return true;
-        }
         case BsonTag::kBindata:
         case BsonTag::kScopedJs:
         case BsonTag::kRegexp:
@@ -276,7 +254,6 @@ inline bool Print(const BsonValue &v, BsonDocDumper *d) {
         case BsonTag::kMaxKey:
             // assert (false);
             return false;
-            // assert(false);
     }
 }
 
