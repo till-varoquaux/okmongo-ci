@@ -17,46 +17,45 @@ namespace okmongo {
  */
 
 template <typename... Values>
-void FillInsertOp(BsonWriter *w, int32_t requestid, const char *db,
+bool FillInsertOp(BsonWriter *w, int32_t requestid, const char *db,
                   const char *collection, const Values &... values);
 
 /**
  * Insert a range of documents
  *
- * Returns an iterator to the first element that could not fit in the query or
- * `end` if all the elements could fit.
+ * Updates `It` to point to the first document that couldn't fit in the query.
  */
 template <typename It>
-It FillInsertRangeOp(BsonWriter *w, int32_t requestid, const char *db,
-                     const char *collection, It start, const It end);
+bool FillInsertRangeOp(BsonWriter *w, int32_t requestid, const char *db,
+                       const char *collection, It *start, const It end);
 
 template <typename T>
-void FillQueryOp(BsonWriter *w, int32_t requestid, const char *db,
+bool FillQueryOp(BsonWriter *w, int32_t requestid, const char *db,
                  const char *collection, const T &qry, int32_t limit = 0);
 
 template <typename T, typename FldSelector>
-void FillQueryOp(BsonWriter *w, int32_t requestid, const char *db,
+bool FillQueryOp(BsonWriter *w, int32_t requestid, const char *db,
                  const char *collection, const T &qry, const FldSelector &sel,
                  int32_t limit = 0);
 
 template <typename Select, typename Operation>
-void FillUpdateOp(BsonWriter *w, int32_t requestid, const char *db,
+bool FillUpdateOp(BsonWriter *w, int32_t requestid, const char *db,
                   const char *collection, const Select &qry,
                   const Operation &op, bool upsert = false);
 
 template <typename T>
-void FillDeleteOp(BsonWriter *w, int32_t requestid, const char *db,
+bool FillDeleteOp(BsonWriter *w, int32_t requestid, const char *db,
                   const char *collection, const T &qry);
 
-void FillGetMoreOp(BsonWriter *w, int32_t requestid, const char *db,
+bool FillGetMoreOp(BsonWriter *w, int32_t requestid, const char *db,
                    const char *collection, int64_t cursorid);
 
-void FillIsMasterOp(BsonWriter *w, int32_t requestid);
+bool FillIsMasterOp(BsonWriter *w, int32_t requestid);
 
 /**
  * @todo iterators for Kill cursors
  */
-void FillKillCursorsOp(BsonWriter *w, int32_t requestid, int64_t cursorid);
+bool FillKillCursorsOp(BsonWriter *w, int32_t requestid, int64_t cursorid);
 
 /** @} */
 
@@ -97,7 +96,7 @@ static_assert(sizeof(MsgHeader) == 4 * sizeof(int32_t), "Packing failed");
 
 // Specialize this template to use the functions in this header...
 template <typename T>
-void BsonWriteFields(BsonWriter *w, const T &);
+bool BsonWriteFields(BsonWriter *w, const T &);
 
 //------------------------------------------------------------------------------
 // Reading...
@@ -331,19 +330,24 @@ void AppendWriteConcern(BsonWriter *w);
 
 // Inner function...
 template <int32_t cnt = 0>
-void InsertDocuments(BsonWriter *) {}
+bool InsertDocuments(BsonWriter *) {
+    return true;
+}
 
 template <int32_t cnt = 0, typename Arg, typename... Rest>
-void InsertDocuments(BsonWriter *w, const Arg &v, const Rest &... rest) {
+bool InsertDocuments(BsonWriter *w, const Arg &v, const Rest &... rest) {
     w->PushDocument(cnt);
-    BsonWriteFields<Arg>(w, v);
+    if (!BsonWriteFields<Arg>(w, v)) {
+        return false;
+    }
     w->Pop();
 
     InsertDocuments<cnt + 1>(w, rest...);
+    return true;
 }
 
 template <typename... Values>
-void FillInsertOp(BsonWriter *w, int32_t requestid, const char *db,
+bool FillInsertOp(BsonWriter *w, int32_t requestid, const char *db,
                   const char *collection, const Values &... values) {
     AppendCommandHeader(w, requestid, db);
 
@@ -351,7 +355,11 @@ void FillInsertOp(BsonWriter *w, int32_t requestid, const char *db,
     {
         w->Element("insert", collection);
         w->PushArray("documents");
-        { InsertDocuments(w, values...); }
+        {
+            if (!InsertDocuments(w, values...)) {
+                return false;
+            }
+        }
         w->Pop();
 
         AppendWriteConcern(w);
@@ -359,6 +367,7 @@ void FillInsertOp(BsonWriter *w, int32_t requestid, const char *db,
     w->Pop();
 
     w->FlushLen();
+    return true;
 }
 
 /**
@@ -369,8 +378,8 @@ void FillInsertOp(BsonWriter *w, int32_t requestid, const char *db,
 constexpr int32_t kMaxWriteBatchSize = 1000;
 
 template <typename It>
-It FillInsertRangeOp(BsonWriter *w, int32_t requestid, const char *db,
-                     const char *collection, It curs, const It end) {
+bool FillInsertRangeOp(BsonWriter *w, int32_t requestid, const char *db,
+                       const char *collection, It *curs, const It end) {
     AppendCommandHeader(w, requestid, db);
 
     w->Document();
@@ -379,12 +388,14 @@ It FillInsertRangeOp(BsonWriter *w, int32_t requestid, const char *db,
         w->PushArray("documents");
         {
             int32_t cnt = 0;
-            while (curs != end && cnt < kMaxWriteBatchSize) {
+            while (*curs != end && cnt < kMaxWriteBatchSize) {
                 w->PushDocument(cnt);
                 // <typename It::value_type>
-                BsonWriteFields(w, *curs);
+                if (!BsonWriteFields(w, *(*curs))) {
+                    return false;
+                };
                 w->Pop();
-                ++curs, ++cnt;
+                ++(*curs), ++cnt;
             }
         }
         w->Pop();
@@ -394,11 +405,11 @@ It FillInsertRangeOp(BsonWriter *w, int32_t requestid, const char *db,
     w->Pop();
 
     w->FlushLen();
-    return curs;
+    return true;
 }
 
 template <typename T>
-void FillQueryOp(BsonWriter *w, int32_t requestid, const char *db,
+bool FillQueryOp(BsonWriter *w, int32_t requestid, const char *db,
                  const char *collection, const T &qry, int32_t limit) {
     w->AppendRaw(MsgHeader(requestid, MongoOpcode::kQuery));
     w->AppendRaw<int32_t>(0);  // flags
@@ -414,14 +425,17 @@ void FillQueryOp(BsonWriter *w, int32_t requestid, const char *db,
     w->AppendRaw<int32_t>(limit);  // Number to return
 
     w->Document();
-    BsonWriteFields<T>(w, qry);
+    if (!BsonWriteFields<T>(w, qry)) {
+        return false;
+    }
     w->Pop();
 
     w->FlushLen();
+    return true;
 }
 
 template <typename T, typename FldSelector>
-void FillQueryOp(BsonWriter *w, int32_t requestid, const char *db,
+bool FillQueryOp(BsonWriter *w, int32_t requestid, const char *db,
                  const char *collection, const T &qry, const FldSelector &sel,
                  int32_t limit) {
     w->AppendRaw(MsgHeader(requestid, MongoOpcode::kQuery));
@@ -438,18 +452,23 @@ void FillQueryOp(BsonWriter *w, int32_t requestid, const char *db,
     w->AppendRaw<int32_t>(limit);  // Number to return
 
     w->Document();
-    BsonWriteFields<T>(w, qry);
+    if (!BsonWriteFields<T>(w, qry)) {
+        return false;
+    }
     w->Pop();
 
     w->Document();
-    BsonWriteFields<FldSelector>(w, sel);
+    if (!BsonWriteFields<FldSelector>(w, sel)) {
+        return false;
+    }
     w->Pop();
 
     w->FlushLen();
+    return true;
 }
 
 template <typename Select, typename Operation>
-void FillUpdateOp(BsonWriter *w, int32_t requestid, const char *db,
+bool FillUpdateOp(BsonWriter *w, int32_t requestid, const char *db,
                   const char *collection, const Select &qry,
                   const Operation &op, bool upsert) {
     AppendCommandHeader(w, requestid, db);
@@ -463,11 +482,19 @@ void FillUpdateOp(BsonWriter *w, int32_t requestid, const char *db,
             w->PushDocument(0);
             {
                 w->PushDocument("q");
-                { BsonWriteFields<Select>(w, qry); }
+                {
+                    if (!BsonWriteFields<Select>(w, qry)) {
+                        return false;
+                    }
+                }
                 w->Pop();
 
                 w->PushDocument("u");
-                { BsonWriteFields<Operation>(w, op); }
+                {
+                    if (!BsonWriteFields<Operation>(w, op)) {
+                        return false;
+                    }
+                }
                 w->Pop();
 
                 if (upsert) {
@@ -483,10 +510,11 @@ void FillUpdateOp(BsonWriter *w, int32_t requestid, const char *db,
     w->Pop();
 
     w->FlushLen();
+    return true;
 }
 
 template <typename T>
-void FillDeleteOp(BsonWriter *w, int32_t requestid, const char *db,
+bool FillDeleteOp(BsonWriter *w, int32_t requestid, const char *db,
                   const char *collection, const T &qry) {
     AppendCommandHeader(w, requestid, db);
 
@@ -499,7 +527,11 @@ void FillDeleteOp(BsonWriter *w, int32_t requestid, const char *db,
             w->PushDocument(0);
             {
                 w->PushDocument("q");
-                { BsonWriteFields<T>(w, qry); }
+                {
+                    if (!BsonWriteFields<T>(w, qry)) {
+                        return false;
+                    }
+                }
                 w->Pop();
 
                 w->Element("limit", 0);
@@ -513,6 +545,7 @@ void FillDeleteOp(BsonWriter *w, int32_t requestid, const char *db,
     w->Pop();
 
     w->FlushLen();
+    return true;
 }
 
 template <typename Implementation>

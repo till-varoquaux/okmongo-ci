@@ -140,16 +140,19 @@ struct IncCounter {
 
 namespace okmongo {
 template <>
-void BsonWriteFields<All>(BsonWriter *, const All &) {}
-
-template <>
-void BsonWriteFields<UserInfo>(BsonWriter *w, const UserInfo &inf) {
-    w->Element("name", inf.name);
-    w->Element("counter", inf.counter);
+bool BsonWriteFields<All>(BsonWriter *, const All &) {
+    return true;
 }
 
 template <>
-void BsonWriteFields<UserQuery>(BsonWriter *w, const UserQuery &inf) {
+bool BsonWriteFields<UserInfo>(BsonWriter *w, const UserInfo &inf) {
+    w->Element("name", inf.name);
+    w->Element("counter", inf.counter);
+    return true;
+}
+
+template <>
+bool BsonWriteFields<UserQuery>(BsonWriter *w, const UserQuery &inf) {
     w->PushArray("$or");
     int32_t key = 0;
 
@@ -162,20 +165,23 @@ void BsonWriteFields<UserQuery>(BsonWriter *w, const UserQuery &inf) {
     w->Pop();
 
     w->Pop();
+    return true;
 }
 
 template <>
-void BsonWriteFields<LongUserInfo>(BsonWriter *w, const LongUserInfo &inf) {
+bool BsonWriteFields<LongUserInfo>(BsonWriter *w, const LongUserInfo &inf) {
     w->Element("first_name", inf.first_name);
     w->Element("last_name", inf.last_name);
     w->Element("counter", inf.counter);
+    return true;
 }
 
 template <>
-void BsonWriteFields<IncCounter>(BsonWriter *w, const IncCounter &cnt) {
+bool BsonWriteFields<IncCounter>(BsonWriter *w, const IncCounter &cnt) {
     w->PushDocument("$inc");
     w->Element("counter", static_cast<int32_t>(cnt.quantity));
     w->Pop();
+    return true;
 }
 }  // namespace okmongo
 

@@ -137,15 +137,16 @@ void AppendWriteConcern(BsonWriter *w) {
     w->Pop();
 }
 
-void FillIsMasterOp(BsonWriter *w, int32_t requestid) {
+bool FillIsMasterOp(BsonWriter *w, int32_t requestid) {
     AppendCommandHeader(w, requestid, "admin");
     w->Document();
     w->Element("ismaster", 1);
     w->Pop();
     w->FlushLen();
+    return true;
 }
 
-void FillGetMoreOp(BsonWriter *w, int32_t requestid, const char *db,
+bool FillGetMoreOp(BsonWriter *w, int32_t requestid, const char *db,
                    const char *collection, int64_t cursorid) {
     w->AppendRaw(MsgHeader(requestid, MongoOpcode::kGetMore));
     w->AppendRaw<int32_t>(0);  // Zero
@@ -157,14 +158,16 @@ void FillGetMoreOp(BsonWriter *w, int32_t requestid, const char *db,
     w->AppendRaw<int32_t>(0);         // Number to return
     w->AppendRaw<int64_t>(cursorid);  // Cursorid
     w->FlushLen();
+    return true;
 }
 
-void FillKillCursorsOp(BsonWriter *w, int32_t requestid, int64_t cursorid) {
+bool FillKillCursorsOp(BsonWriter *w, int32_t requestid, int64_t cursorid) {
     w->AppendRaw(MsgHeader(requestid, MongoOpcode::kKillCursors));
     w->AppendRaw<int32_t>(0);         // Zero
     w->AppendRaw<int32_t>(1);         // Num cursor
     w->AppendRaw<int64_t>(cursorid);  // Cursorid
     w->FlushLen();
+    return true;
 }
 
 }  // namespace okmongo
