@@ -136,46 +136,46 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr><td colspan="2"><h2><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr><td class="memTemplParams" colspan="2"><a class="anchor" id="gad5f7c5b8453a7cb4305615d183871304"></a><!-- doxytag: member="mongo.h::FillInsertOp" ref="gad5f7c5b8453a7cb4305615d183871304" args="(BsonWriter *w, int32_t requestid, const char *db, const char *collection, const Values &amp;...values)" -->
+<tr><td class="memTemplParams" colspan="2"><a class="anchor" id="ga58d9cd37b6281a9501deda97b7bca8d1"></a><!-- doxytag: member="mongo.h::FillInsertOp" ref="ga58d9cd37b6281a9501deda97b7bca8d1" args="(BsonWriter *w, int32_t requestid, const char *db, const char *collection, const Values &amp;...values)" -->
 template&lt;typename... Values&gt; </td></tr>
-<tr><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>okmongo::FillInsertOp</b> (BsonWriter *w, int32_t requestid, const char *db, const char *collection, const Values &amp;...values)</td></tr>
+<tr><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>okmongo::FillInsertOp</b> (BsonWriter *w, int32_t requestid, const char *db, const char *collection, const Values &amp;...values)</td></tr>
 <tr><td class="memTemplParams" colspan="2">template&lt;typename It &gt; </td></tr>
-<tr><td class="memTemplItemLeft" align="right" valign="top">It&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__mng__cmd__wrt.html#ga8526420e29edc73c6983b1d5f5fe6db5">okmongo::FillInsertRangeOp</a> (BsonWriter *w, int32_t requestid, const char *db, const char *collection, It start, const It end)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert a range of documents.  <a href="group__mng__cmd__wrt.html#ga8526420e29edc73c6983b1d5f5fe6db5"></a><br/></td></tr>
-<tr><td class="memTemplParams" colspan="2"><a class="anchor" id="gaaa1b93136c1a1bc9c23ff83512ba53bf"></a><!-- doxytag: member="mongo.h::FillQueryOp" ref="gaaa1b93136c1a1bc9c23ff83512ba53bf" args="(BsonWriter *w, int32_t requestid, const char *db, const char *collection, const T &amp;qry, int32_t limit=0)" -->
+<tr><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__mng__cmd__wrt.html#ga64aec73bb65fdb9955713e07bbdfc1f3">okmongo::FillInsertRangeOp</a> (BsonWriter *w, int32_t requestid, const char *db, const char *collection, It *start, const It end)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert a range of documents.  <a href="group__mng__cmd__wrt.html#ga64aec73bb65fdb9955713e07bbdfc1f3"></a><br/></td></tr>
+<tr><td class="memTemplParams" colspan="2"><a class="anchor" id="ga6c873d6f2d2283d0c7d838c878b3e4ec"></a><!-- doxytag: member="mongo.h::FillQueryOp" ref="ga6c873d6f2d2283d0c7d838c878b3e4ec" args="(BsonWriter *w, int32_t requestid, const char *db, const char *collection, const T &amp;qry, int32_t limit=0)" -->
 template&lt;typename T &gt; </td></tr>
-<tr><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>okmongo::FillQueryOp</b> (BsonWriter *w, int32_t requestid, const char *db, const char *collection, const T &amp;qry, int32_t limit=0)</td></tr>
-<tr><td class="memTemplParams" colspan="2"><a class="anchor" id="ga855031e9eed09efc6fb392c4c51f4c51"></a><!-- doxytag: member="mongo.h::FillQueryOp" ref="ga855031e9eed09efc6fb392c4c51f4c51" args="(BsonWriter *w, int32_t requestid, const char *db, const char *collection, const T &amp;qry, const FldSelector &amp;sel, int32_t limit=0)" -->
+<tr><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>okmongo::FillQueryOp</b> (BsonWriter *w, int32_t requestid, const char *db, const char *collection, const T &amp;qry, int32_t limit=0)</td></tr>
+<tr><td class="memTemplParams" colspan="2"><a class="anchor" id="ga630a59c8b5d3d12f6fece1a3eeeaca45"></a><!-- doxytag: member="mongo.h::FillQueryOp" ref="ga630a59c8b5d3d12f6fece1a3eeeaca45" args="(BsonWriter *w, int32_t requestid, const char *db, const char *collection, const T &amp;qry, const FldSelector &amp;sel, int32_t limit=0)" -->
 template&lt;typename T , typename FldSelector &gt; </td></tr>
-<tr><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>okmongo::FillQueryOp</b> (BsonWriter *w, int32_t requestid, const char *db, const char *collection, const T &amp;qry, const FldSelector &amp;sel, int32_t limit=0)</td></tr>
-<tr><td class="memTemplParams" colspan="2"><a class="anchor" id="ga44d7785923ceb4a1f62ef800ceeb0216"></a><!-- doxytag: member="mongo.h::FillUpdateOp" ref="ga44d7785923ceb4a1f62ef800ceeb0216" args="(BsonWriter *w, int32_t requestid, const char *db, const char *collection, const Select &amp;qry, const Operation &amp;op, bool upsert=false)" -->
+<tr><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>okmongo::FillQueryOp</b> (BsonWriter *w, int32_t requestid, const char *db, const char *collection, const T &amp;qry, const FldSelector &amp;sel, int32_t limit=0)</td></tr>
+<tr><td class="memTemplParams" colspan="2"><a class="anchor" id="ga16f6aab53927e1a7597822ea438ff0a9"></a><!-- doxytag: member="mongo.h::FillUpdateOp" ref="ga16f6aab53927e1a7597822ea438ff0a9" args="(BsonWriter *w, int32_t requestid, const char *db, const char *collection, const Select &amp;qry, const Operation &amp;op, bool upsert=false)" -->
 template&lt;typename Select , typename Operation &gt; </td></tr>
-<tr><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>okmongo::FillUpdateOp</b> (BsonWriter *w, int32_t requestid, const char *db, const char *collection, const Select &amp;qry, const Operation &amp;op, bool upsert=false)</td></tr>
-<tr><td class="memTemplParams" colspan="2"><a class="anchor" id="gac54501584faa94136387d5af536d4291"></a><!-- doxytag: member="mongo.h::FillDeleteOp" ref="gac54501584faa94136387d5af536d4291" args="(BsonWriter *w, int32_t requestid, const char *db, const char *collection, const T &amp;qry)" -->
+<tr><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>okmongo::FillUpdateOp</b> (BsonWriter *w, int32_t requestid, const char *db, const char *collection, const Select &amp;qry, const Operation &amp;op, bool upsert=false)</td></tr>
+<tr><td class="memTemplParams" colspan="2"><a class="anchor" id="ga0f6949d8276b6589e0d8f0c75509aa8c"></a><!-- doxytag: member="mongo.h::FillDeleteOp" ref="ga0f6949d8276b6589e0d8f0c75509aa8c" args="(BsonWriter *w, int32_t requestid, const char *db, const char *collection, const T &amp;qry)" -->
 template&lt;typename T &gt; </td></tr>
-<tr><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>okmongo::FillDeleteOp</b> (BsonWriter *w, int32_t requestid, const char *db, const char *collection, const T &amp;qry)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga07c5e2995059411eb583d13f2fa006a5"></a><!-- doxytag: member="mongo.h::FillGetMoreOp" ref="ga07c5e2995059411eb583d13f2fa006a5" args="(BsonWriter *w, int32_t requestid, const char *db, const char *collection, int64_t cursorid)" -->
-void&#160;</td><td class="memItemRight" valign="bottom"><b>okmongo::FillGetMoreOp</b> (BsonWriter *w, int32_t requestid, const char *db, const char *collection, int64_t cursorid)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaee18c2f56daa50181d8a7e0200a5e347"></a><!-- doxytag: member="mongo.h::FillIsMasterOp" ref="gaee18c2f56daa50181d8a7e0200a5e347" args="(BsonWriter *w, int32_t requestid)" -->
-void&#160;</td><td class="memItemRight" valign="bottom"><b>okmongo::FillIsMasterOp</b> (BsonWriter *w, int32_t requestid)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mng__cmd__wrt.html#gad63ba0692278f86e5a0e4ca5fce1632d">okmongo::FillKillCursorsOp</a> (BsonWriter *w, int32_t requestid, int64_t cursorid)</td></tr>
+<tr><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>okmongo::FillDeleteOp</b> (BsonWriter *w, int32_t requestid, const char *db, const char *collection, const T &amp;qry)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga03d0a59490e2be25e69c2c6acf3198c8"></a><!-- doxytag: member="mongo.h::FillGetMoreOp" ref="ga03d0a59490e2be25e69c2c6acf3198c8" args="(BsonWriter *w, int32_t requestid, const char *db, const char *collection, int64_t cursorid)" -->
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>okmongo::FillGetMoreOp</b> (BsonWriter *w, int32_t requestid, const char *db, const char *collection, int64_t cursorid)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga58e5ca283bfd7dca3211f62a52249b48"></a><!-- doxytag: member="mongo.h::FillIsMasterOp" ref="ga58e5ca283bfd7dca3211f62a52249b48" args="(BsonWriter *w, int32_t requestid)" -->
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>okmongo::FillIsMasterOp</b> (BsonWriter *w, int32_t requestid)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mng__cmd__wrt.html#ga3083f3333674283105b5be9c7e5868b1">okmongo::FillKillCursorsOp</a> (BsonWriter *w, int32_t requestid, int64_t cursorid)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab55b0f8b9301b13a54e7e426f40ac6dc"></a><!-- doxytag: member="mongo.h::static_assert" ref="ab55b0f8b9301b13a54e7e426f40ac6dc" args="(sizeof(MsgHeader)==4 *sizeof(int32_t),&quot;Packing failed&quot;)" -->
 &#160;</td><td class="memItemRight" valign="bottom"><b>okmongo::static_assert</b> (sizeof(MsgHeader)==4 *sizeof(int32_t),&quot;Packing failed&quot;)</td></tr>
-<tr><td class="memTemplParams" colspan="2"><a class="anchor" id="a8dbc8d8d4c5555a8b8d8e0398784be1b"></a><!-- doxytag: member="mongo.h::BsonWriteFields" ref="a8dbc8d8d4c5555a8b8d8e0398784be1b" args="(BsonWriter *w, const T &amp;)" -->
+<tr><td class="memTemplParams" colspan="2"><a class="anchor" id="a2a1b3c40faf1e6339e6b28078e656bf0"></a><!-- doxytag: member="mongo.h::BsonWriteFields" ref="a2a1b3c40faf1e6339e6b28078e656bf0" args="(BsonWriter *w, const T &amp;)" -->
 template&lt;typename T &gt; </td></tr>
-<tr><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>okmongo::BsonWriteFields</b> (BsonWriter *w, const T &amp;)</td></tr>
+<tr><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>okmongo::BsonWriteFields</b> (BsonWriter *w, const T &amp;)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a354079b1be3b0e1e3aacf2e14835b7c0"></a><!-- doxytag: member="mongo.h::static_assert" ref="a354079b1be3b0e1e3aacf2e14835b7c0" args="(sizeof(ResponseHeader)==sizeof(MsgHeader)+sizeof(int32_t)*3+sizeof(int64_t),&quot;Packing pb&quot;)" -->
 &#160;</td><td class="memItemRight" valign="bottom"><b>okmongo::static_assert</b> (sizeof(ResponseHeader)==sizeof(MsgHeader)+sizeof(int32_t)*3+sizeof(int64_t),&quot;Packing pb&quot;)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af468d7a4e47efd1ff10a66f22f829460"></a><!-- doxytag: member="mongo.h::AppendCommandHeader" ref="af468d7a4e47efd1ff10a66f22f829460" args="(BsonWriter *w, int32_t requestid, const char *db)" -->
 void&#160;</td><td class="memItemRight" valign="bottom"><b>okmongo::AppendCommandHeader</b> (BsonWriter *w, int32_t requestid, const char *db)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a08840cde28673608965b46ba20721302"></a><!-- doxytag: member="mongo.h::AppendWriteConcern" ref="a08840cde28673608965b46ba20721302" args="(BsonWriter *w)" -->
 void&#160;</td><td class="memItemRight" valign="bottom"><b>okmongo::AppendWriteConcern</b> (BsonWriter *w)</td></tr>
-<tr><td class="memTemplParams" colspan="2"><a class="anchor" id="a7ee5a147014625eef003883f6cfdcf7e"></a><!-- doxytag: member="mongo.h::InsertDocuments" ref="a7ee5a147014625eef003883f6cfdcf7e" args="(BsonWriter *)" -->
+<tr><td class="memTemplParams" colspan="2"><a class="anchor" id="a65116088e308cd380f1b84b8613eaf54"></a><!-- doxytag: member="mongo.h::InsertDocuments" ref="a65116088e308cd380f1b84b8613eaf54" args="(BsonWriter *)" -->
 template&lt;int32_t cnt = 0&gt; </td></tr>
-<tr><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>okmongo::InsertDocuments</b> (BsonWriter *)</td></tr>
-<tr><td class="memTemplParams" colspan="2"><a class="anchor" id="aea9024ff7d452914711d00d22a5cc469"></a><!-- doxytag: member="mongo.h::InsertDocuments" ref="aea9024ff7d452914711d00d22a5cc469" args="(BsonWriter *w, const Arg &amp;v, const Rest &amp;...rest)" -->
+<tr><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>okmongo::InsertDocuments</b> (BsonWriter *)</td></tr>
+<tr><td class="memTemplParams" colspan="2"><a class="anchor" id="a36ff1d3509ad6a4f5653ccab41def96f"></a><!-- doxytag: member="mongo.h::InsertDocuments" ref="a36ff1d3509ad6a4f5653ccab41def96f" args="(BsonWriter *w, const Arg &amp;v, const Rest &amp;...rest)" -->
 template&lt;int32_t cnt = 0, typename Arg , typename... Rest&gt; </td></tr>
-<tr><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>okmongo::InsertDocuments</b> (BsonWriter *w, const Arg &amp;v, const Rest &amp;...rest)</td></tr>
+<tr><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>okmongo::InsertDocuments</b> (BsonWriter *w, const Arg &amp;v, const Rest &amp;...rest)</td></tr>
 <tr><td colspan="2"><h2><a name="var-members"></a>
 Variables</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">constexpr int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceokmongo.html#a4d334516c724ab5f1d92e537d0432670">okmongo::kMaxWriteBatchSize</a> = 1000</td></tr>
@@ -203,7 +203,7 @@ Variables</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Feb 4 2015 02:24:57 for okmongo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Feb 6 2015 03:17:53 for okmongo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>
