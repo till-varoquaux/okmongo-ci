@@ -1,5 +1,5 @@
 lib_LTLIBRARIES = libokmongo.la
-libokmongo_la_SOURCES = bson.cc mongo.cc
+libokmongo_la_SOURCES = bson.cc mongo.cc bson_dumper.cc
 libokmongo_la_LDFLAGS = -version-info $(LIBVERSION)
 
 pkginclude_HEADERS = bson.h mongo.h string_matcher.h bson_dumper.h

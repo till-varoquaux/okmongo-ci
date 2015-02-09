@@ -20,7 +20,7 @@ void OpResponseParser::EmitFieldName(const char *data, const int32_t len) {
         if (len == 0) {
             base_matcher_.AddChar('\000');
             base_field_ = base_matcher_.GetResult();
-            base_matcher_. ~BaseMatcher();
+            base_matcher_.~BaseMatcher();
         }
     } else if (IsError()) {
         if (error_field_ != ErrorField::kField) {
@@ -34,7 +34,7 @@ void OpResponseParser::EmitFieldName(const char *data, const int32_t len) {
         if (len == 0) {
             error_matcher_.AddChar('\000');
             error_field_ = error_matcher_.GetResult();
-            error_matcher_. ~ErrorMatcher();
+            error_matcher_.~ErrorMatcher();
         }
     }
 }

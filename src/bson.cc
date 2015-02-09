@@ -1,11 +1,10 @@
 #include "bson.h"
-#include <iostream>
 
 namespace okmongo {
 
 BsonWriter::~BsonWriter() {
     if (!DataIsInline()) {
-        data_. ~unique_ptr<char[]>();
+        data_.~unique_ptr<char[]>();
     }
 }
 
@@ -267,34 +266,42 @@ void BsonValueIt::Invalidate() {
     key_ = nullptr;
 }
 
-void BsonValueIt::MoveTo(const char *curs) {
+bool BsonValueIt::MoveTo(const char *curs) {
+    if (curs == end_ - 1 && *curs == '\000') {
+        Invalidate();
+        return true;
+    }
     if (curs >= end_ - 1) {
-        // Error
-        return Invalidate();
+        Invalidate();
+        return false;
     }
     const BsonTag tag = ToBsonTag(*curs);
     if (tag == BsonTag::kMinKey) {
-        return Invalidate();
+        Invalidate();
+        return false;
     }
     ++curs;
     const char *key = curs;
     while (*curs) {
         ++curs;
         if (curs >= end_ - 1) {
-            return Invalidate();
+            Invalidate();
+            return false;
         }
     }
     ++curs;
     auto size = GetValueLength(tag, curs, static_cast<int32_t>(end_ - curs));
 
     if (size == -1) {
-        return Invalidate();
+        Invalidate();
+        return false;
     }
 
     data_ = curs;
     tag_ = tag;
     size_ = size;
     key_ = key;
+    return true;
 }
 
 BsonValueIt::BsonValueIt() { Invalidate(); }
@@ -308,10 +315,11 @@ BsonValueIt::BsonValueIt(const BsonValue &v) {
     MoveTo(v.data_ + sizeof(int32_t));
 }
 
-void BsonValueIt::next() {
-    if (!Empty()) {
-        MoveTo(data_ + size_);
+bool BsonValueIt::next() {
+    if (!Done()) {
+        return MoveTo(data_ + size_);
     }
+    return false;
 }
 
 }  // namespace okmongo

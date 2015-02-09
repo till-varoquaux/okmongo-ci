@@ -84,8 +84,7 @@ dnl needs automake > =1.13
 ifdef([AM_EXTRA_RECURSIVE_TARGETS],
     [
         AC_ARG_VAR([CLANG_FORMAT], [clang-format command])
-        AC_CHECK_PROGS(CLANG_FORMAT, clang-format clang-format-3.6 clang-format-3.4, )
-
+        AC_CHECK_PROGS(CLANG_FORMAT, clang-format clang-format-3.7 clang-format-3.6 clang-format-3.5 clang-format-3.4, )
         AS_IF(
             [test "x${CLANG_FORMAT}" != "x"],
             [AM_EXTRA_RECURSIVE_TARGETS([format-src])]

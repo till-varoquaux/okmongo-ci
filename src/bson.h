@@ -547,14 +547,16 @@ protected:
     const char *end_ = nullptr;
     const char *key_ = nullptr;
     void Invalidate();
-    void MoveTo(const char *);
+    bool MoveTo(const char *);
 
 public:
     BsonValueIt();
     explicit BsonValueIt(const BsonValue &v);
     bool Done() const;
     const char *key() const { return key_; }
-    void next();
+
+    // Returns `false` in case of error.
+    bool next();
 };
 
 //------------------------------------------------------------------------------
@@ -649,10 +651,9 @@ void BsonWriter::ElementBindata(const K key, const BindataSubtype st,
     pos_ += flen;
 }
 
-
 template <typename K>
 void BsonWriter::Element(const K key, std::nullptr_t) {
-     StartField(BsonTag::kNull, key, 0);
+    StartField(BsonTag::kNull, key, 0);
 }
 
 template <typename K>

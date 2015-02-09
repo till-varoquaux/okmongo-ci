@@ -27,7 +27,10 @@ static std::string PrintBsonValue(const std::string &s) {
     okmongo::BsonValue v(s.data(), static_cast<int32_t>(s.size()));
     std::ostringstream ss;
     okmongo::BsonDocDumper d(&ss);
-    Print(v, &d);
+    bool ok = Print(v, &d);
+    if (!ok) {
+        return std::string();
+    }
     return ss.str();
 }
 
@@ -71,7 +74,7 @@ int main() {
         w.ElementObjectId("objectid", oid);
         w.ElementTimestamp("timestamp", 0);
         {
-            const char* bin = "Some bin data 123";
+            const char *bin = "Some bin data 123";
             w.ElementBindata("bin_data", okmongo::BindataSubtype::kGeneric, bin,
                              static_cast<int>(strlen(bin)));
         }
