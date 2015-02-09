@@ -103,7 +103,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pro-attribs">Protected Attributes</a>  </div>
+<a href="#pro-attribs">Protected Attributes</a> &#124;
+<a href="#friends">Friends</a>  </div>
   <div class="headertitle">
 <div class="title">okmongo::BsonValue Class Reference</div>  </div>
 </div><!--header-->
@@ -124,12 +125,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af1e85e2e4c222ef9c60e655f60a9b585"></a><!-- doxytag: member="okmongo::BsonValue::data" ref="af1e85e2e4c222ef9c60e655f60a9b585" args="() const " -->
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>data</b> () const </td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad8ca271c2dafa5498fa6ffe310dede47"></a><!-- doxytag: member="okmongo::BsonValue::size" ref="ad8ca271c2dafa5498fa6ffe310dede47" args="() const " -->
-int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>size</b> () const </td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a44a0c4d885e3145414add6e95656241b"></a><!-- doxytag: member="okmongo::BsonValue::tag" ref="a44a0c4d885e3145414add6e95656241b" args="() const " -->
-<a class="el" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9">BsonTag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>tag</b> () const </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0e2736b0c43212c3662c9af6824e937d"></a><!-- doxytag: member="okmongo::BsonValue::Tag" ref="a0e2736b0c43212c3662c9af6824e937d" args="() const " -->
+<a class="el" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9">BsonTag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Tag</b> () const </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8fb6c601d4f116b4cd0df13ac7c04d13"></a><!-- doxytag: member="okmongo::BsonValue::GetDataSize" ref="a8fb6c601d4f116b4cd0df13ac7c04d13" args="() const " -->
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>GetDataSize</b> () const </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aab291a9c5d87dc453db73377971751ee"></a><!-- doxytag: member="okmongo::BsonValue::GetData" ref="aab291a9c5d87dc453db73377971751ee" args="() const " -->
+const char *&#160;</td><td class="memItemRight" valign="bottom"><b>GetData</b> () const </td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2322e4364748e24465c32528de3c9f54"></a><!-- doxytag: member="okmongo::BsonValue::BsonValue" ref="a2322e4364748e24465c32528de3c9f54" args="(const char *data, int32_t size, BsonTag tag=BsonTag::kDocument)" -->
 &#160;</td><td class="memItemRight" valign="bottom"><b>BsonValue</b> (const char *data, int32_t size, <a class="el" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9">BsonTag</a> tag=BsonTag::kDocument)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab0f7a574e8ea73ba73d8ea80ad48a57c"></a><!-- doxytag: member="okmongo::BsonValue::BsonValue" ref="ab0f7a574e8ea73ba73d8ea80ad48a57c" args="(const BsonValue &amp;)" -->
@@ -140,12 +141,20 @@ int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>size</b> () const 
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>Empty</b> () const </td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af2bc6ccd741a67a2afd50050dc839f3e"></a><!-- doxytag: member="okmongo::BsonValue::GetField" ref="af2bc6ccd741a67a2afd50050dc839f3e" args="(const char *needle) const " -->
 <a class="el" href="classokmongo_1_1BsonValue.html">BsonValue</a>&#160;</td><td class="memItemRight" valign="bottom"><b>GetField</b> (const char *needle) const </td></tr>
-<tr><td class="memTemplParams" colspan="2"><a class="anchor" id="a742858e5abc7753825ae94432e051b1f"></a><!-- doxytag: member="okmongo::BsonValue::Get" ref="a742858e5abc7753825ae94432e051b1f" args="(T *dst) const " -->
-template&lt;typename T , BsonTag tag&gt; </td></tr>
-<tr><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Get</b> (T *dst) const </td></tr>
-<tr><td class="memTemplParams" colspan="2"><a class="anchor" id="a7ab01bf89e67031fbd63a4339b426f95"></a><!-- doxytag: member="okmongo::BsonValue::Get" ref="a7ab01bf89e67031fbd63a4339b426f95" args="() const " -->
-template&lt;typename T , BsonTag tag&gt; </td></tr>
-<tr><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Get</b> () const </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac206a7fcc5df0030bc6c436b27735ebb"></a><!-- doxytag: member="okmongo::BsonValue::GetInt64" ref="ac206a7fcc5df0030bc6c436b27735ebb" args="() const " -->
+int64_t&#160;</td><td class="memItemRight" valign="bottom"><b>GetInt64</b> () const </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a43317e42742b1a2bc7debaafccc4704e"></a><!-- doxytag: member="okmongo::BsonValue::GetTimestamp" ref="a43317e42742b1a2bc7debaafccc4704e" args="() const " -->
+int64_t&#160;</td><td class="memItemRight" valign="bottom"><b>GetTimestamp</b> () const </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2303ced42e30643cca9ac4d4af797e31"></a><!-- doxytag: member="okmongo::BsonValue::GetUtcDatetime" ref="a2303ced42e30643cca9ac4d4af797e31" args="() const " -->
+int64_t&#160;</td><td class="memItemRight" valign="bottom"><b>GetUtcDatetime</b> () const </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a957e61fb2e45997727b111d7cd29e84e"></a><!-- doxytag: member="okmongo::BsonValue::GetInt32" ref="a957e61fb2e45997727b111d7cd29e84e" args="() const " -->
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>GetInt32</b> () const </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a38d5c7728c62b2a26deece06768e8326"></a><!-- doxytag: member="okmongo::BsonValue::GetDouble" ref="a38d5c7728c62b2a26deece06768e8326" args="() const " -->
+double&#160;</td><td class="memItemRight" valign="bottom"><b>GetDouble</b> () const </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad599020e62ca56f71038700ae82c5898"></a><!-- doxytag: member="okmongo::BsonValue::GetBool" ref="ad599020e62ca56f71038700ae82c5898" args="() const " -->
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>GetBool</b> () const </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aec4192d2529561998a93d250c51eefcd"></a><!-- doxytag: member="okmongo::BsonValue::GetBinSubstype" ref="aec4192d2529561998a93d250c51eefcd" args="() const " -->
+<a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2">BindataSubtype</a>&#160;</td><td class="memItemRight" valign="bottom"><b>GetBinSubstype</b> () const </td></tr>
 <tr><td colspan="2"><h2><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abd027bff1afcdf81d1a93639e86ed974"></a><!-- doxytag: member="okmongo::BsonValue::data_" ref="abd027bff1afcdf81d1a93639e86ed974" args="" -->
@@ -154,10 +163,14 @@ const char *&#160;</td><td class="memItemRight" valign="bottom"><b>data_</b></td
 <a class="el" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9">BsonTag</a>&#160;</td><td class="memItemRight" valign="bottom"><b>tag_</b></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3ec59f8794a07620b6adc079bec67c60"></a><!-- doxytag: member="okmongo::BsonValue::size_" ref="a3ec59f8794a07620b6adc079bec67c60" args="" -->
 int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>size_</b></td></tr>
+<tr><td colspan="2"><h2><a name="friends"></a>
+Friends</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa70e66eac82b8d73a83984419e1318fb"></a><!-- doxytag: member="okmongo::BsonValue::BsonValueIt" ref="aa70e66eac82b8d73a83984419e1318fb" args="" -->
+class&#160;</td><td class="memItemRight" valign="bottom"><b>BsonValueIt</b></td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock">
-<p>Definition at line <a class="el" href="bson_8h_source.html#l00481">481</a> of file <a class="el" href="bson_8h_source.html">bson.h</a>.</p>
+<p>Definition at line <a class="el" href="bson_8h_source.html#l00511">511</a> of file <a class="el" href="bson_8h_source.html">bson.h</a>.</p>
 </div><hr/>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="bson_8h_source.html">bson.h</a></li>
 <li><a class="el" href="bson_8cc_source.html">bson.cc</a></li>
@@ -180,7 +193,7 @@ int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>size_</b></td></tr
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Feb 6 2015 03:17:53 for okmongo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 9 2015 20:29:18 for okmongo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

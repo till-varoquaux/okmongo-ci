@@ -159,6 +159,9 @@ template&lt;typename K &gt; </td></tr>
 <tr><td class="memTemplParams" colspan="2"><a class="anchor" id="ga5a4c63141b475c32f604a55e045663d7"></a><!-- doxytag: member="okmongo::BsonWriter::ElementObjectId" ref="ga5a4c63141b475c32f604a55e045663d7" args="(const K key, const char val[kObjectIdLen])" -->
 template&lt;typename K &gt; </td></tr>
 <tr><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>ElementObjectId</b> (const K key, const char val[kObjectIdLen])</td></tr>
+<tr><td class="memTemplParams" colspan="2"><a class="anchor" id="ga7730155034ed6222ce0da7d367b95f5d"></a><!-- doxytag: member="okmongo::BsonWriter::ElementBindata" ref="ga7730155034ed6222ce0da7d367b95f5d" args="(const K key, const BindataSubtype, const char *value, const int32_t value_len)" -->
+template&lt;typename K &gt; </td></tr>
+<tr><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>ElementBindata</b> (const K key, const <a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2">BindataSubtype</a>, const char *value, const int32_t value_len)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classokmongo_1_1BsonWriter.html#a4f054900af73b096fdb4f9a5d10379ba">FlushLen</a> ()</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes the current len of the buffer in the first field (as an int32).  <a href="#a4f054900af73b096fdb4f9a5d10379ba"></a><br/></td></tr>
 <tr><td class="memTemplParams" colspan="2"><a class="anchor" id="ga50ee3d2549407351c7290b61a956d6c0"></a><!-- doxytag: member="okmongo::BsonWriter::AppendRaw" ref="ga50ee3d2549407351c7290b61a956d6c0" args="(const T &amp;v)" -->
@@ -232,11 +235,11 @@ static constexpr int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>k
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>A helper class to write bson values. </p>
-<p>This class writes to an internally managed buffer (which can be read through `Data()`. This buffer is the only thing that needs to get allocated in this class.</p>
+<p>This class writes to an internally managed buffer (which can be read through `data()`. This buffer is the only thing that needs to get allocated in this class.</p>
 <dl class="note"><dt><b>Note:</b></dt><dd>this driver only works on little endian architectures. </dd></dl>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>use allocators</dd></dl>
 
-<p>Definition at line <a class="el" href="bson_8h_source.html#l00080">80</a> of file <a class="el" href="bson_8h_source.html">bson.h</a>.</p>
+<p>Definition at line <a class="el" href="bson_8h_source.html#l00107">107</a> of file <a class="el" href="bson_8h_source.html">bson.h</a>.</p>
 </div><hr/><h2>Member Function Documentation</h2>
 <a class="anchor" id="ae328741a31f276913c4cd80e4d618fc5"></a><!-- doxytag: member="okmongo::BsonWriter::Clear" ref="ae328741a31f276913c4cd80e4d618fc5" args="()" -->
 <div class="memitem">
@@ -255,7 +258,7 @@ static constexpr int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>k
 <p>Reset the parser to its initial state. </p>
 <p>After being reset a parser can be reused to parse another value. </p>
 
-<p>Definition at line <a class="el" href="bson_8cc_source.html#l00012">12</a> of file <a class="el" href="bson_8cc_source.html">bson.cc</a>.</p>
+<p>Definition at line <a class="el" href="bson_8cc_source.html#l00011">11</a> of file <a class="el" href="bson_8cc_source.html">bson.cc</a>.</p>
 
 </div>
 </div>
@@ -276,7 +279,7 @@ static constexpr int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>k
 <p>Writes the current len of the buffer in the first field (as an int32). </p>
 <p>This should only be used IFF the first value of the buffer is an int32 </p>
 
-<p>Definition at line <a class="el" href="bson_8h_source.html#l00625">625</a> of file <a class="el" href="bson_8h_source.html">bson.h</a>.</p>
+<p>Definition at line <a class="el" href="bson_8h_source.html#l00672">672</a> of file <a class="el" href="bson_8h_source.html">bson.h</a>.</p>
 
 </div>
 </div>
@@ -298,7 +301,7 @@ static constexpr int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>k
 <p>Count the number of digits appearing in the decimal representation of n. </p>
 <p>`n` must be positive </p>
 
-<p>Definition at line <a class="el" href="bson_8h_source.html#l00677">677</a> of file <a class="el" href="bson_8h_source.html">bson.h</a>.</p>
+<p>Definition at line <a class="el" href="bson_8h_source.html#l00724">724</a> of file <a class="el" href="bson_8h_source.html">bson.h</a>.</p>
 
 </div>
 </div>
@@ -324,7 +327,7 @@ static constexpr int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>k
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Feb 6 2015 03:17:53 for okmongo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 9 2015 20:29:18 for okmongo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

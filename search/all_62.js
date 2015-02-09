@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['bindatasubtype',['BindataSubtype',['../namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2',1,'okmongo']]],
   ['bson_2eh',['bson.h',['../bson_8h.html',1,'']]],
   ['bsondocdumper',['BsonDocDumper',['../classokmongo_1_1BsonDocDumper.html',1,'okmongo']]],
   ['bsondumper',['BsonDumper',['../classokmongo_1_1BsonDumper.html',1,'okmongo']]],

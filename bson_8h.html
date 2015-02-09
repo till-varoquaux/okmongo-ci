@@ -95,7 +95,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <code>#include &lt;algorithm&gt;</code><br/>
 <code>#include &lt;cassert&gt;</code><br/>
 <code>#include &lt;cstddef&gt;</code><br/>
-<code>#include &lt;iostream&gt;</code><br/>
 </div>
 <p><a href="bson_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -126,7 +125,7 @@ Enumerations</h2></td></tr>
 <a class="el" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a68e79e7fd75b9cb9b1ea768dc020b2a5">okmongo::kDocument</a> =  '\x03', 
 <a class="el" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9ad21cf35819f3d4355152c25631f31921">okmongo::kArray</a> =  '\x04', 
 <br/>
-&#160;&#160;<a class="el" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a069491e55fabd0c19281d321fb4f4bac">okmongo::kBinData</a> =  '\x05', 
+&#160;&#160;<a class="el" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a08f26a3711a03137b019eef5c349207f">okmongo::kBindata</a> =  '\x05', 
 <a class="el" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a6123106f1a2227ea21ee102754d96eab">okmongo::kObjectId</a> =  '\x07', 
 <a class="el" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a7257baf38aaab771e7a63265ffc77481">okmongo::kBool</a> =  '\x08', 
 <a class="el" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a25a5b9456c329cceec7dd593b387f1f0">okmongo::kUtcDatetime</a> =  '\x09', 
@@ -145,6 +144,19 @@ Enumerations</h2></td></tr>
 <br/>
  }</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to identify the type of a field in a BSON document.  <a href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9">More...</a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2">okmongo::BindataSubtype</a> { <br/>
+&#160;&#160;<a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2aab41a6e8ed87c5d03c00795a20ce8627">okmongo::kGeneric</a> =  '\x00', 
+<a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2a6487c9434f7a0045c178c1d80e9c979c">okmongo::kFunction</a> =  '\x01', 
+<a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2a032f590d20e9e4bab34a442eda131034">okmongo::kBinary</a> =  '\x02', 
+<a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2a2d8a3a67103825cea603c763520d289c">okmongo::kUuidOld</a> =  '\x03', 
+<br/>
+&#160;&#160;<a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2a127bd69bbf602323ebb399575c6ae373">okmongo::kUuid</a> =  '\x04', 
+<a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2a621f536153d520f16b43ae5e8d84c617">okmongo::kMd5</a> =  '\x05', 
+<a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2ada225c21aee22d747d91c407b9d6c204">okmongo::kMinCustom</a> =  0x80, 
+<b>kMaxCustom</b> =  0xFF
+<br/>
+ }</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Subtype for binary data.  <a href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2">More...</a><br/></td></tr>
 <tr><td colspan="2"><h2><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">BsonTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceokmongo.html#a76ac760423998daf7a0e3ef7d29f66d0">okmongo::ToBsonTag</a> (char c)</td></tr>
@@ -172,7 +184,7 @@ Functions</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Feb 6 2015 03:17:53 for okmongo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 9 2015 20:29:18 for okmongo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

@@ -104,7 +104,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00020"></a>00020         <span class="keywordflow">if</span> (len == 0) {
 <a name="l00021"></a>00021             base_matcher_.AddChar(<span class="charliteral">&#39;\000&#39;</span>);
 <a name="l00022"></a>00022             base_field_ = base_matcher_.GetResult();
-<a name="l00023"></a>00023             base_matcher_. ~BaseMatcher();
+<a name="l00023"></a>00023             base_matcher_.~BaseMatcher();
 <a name="l00024"></a>00024         }
 <a name="l00025"></a>00025     } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (IsError()) {
 <a name="l00026"></a>00026         <span class="keywordflow">if</span> (error_field_ != ErrorField::kField) {
@@ -118,7 +118,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00034"></a>00034         <span class="keywordflow">if</span> (len == 0) {
 <a name="l00035"></a>00035             error_matcher_.AddChar(<span class="charliteral">&#39;\000&#39;</span>);
 <a name="l00036"></a>00036             error_field_ = error_matcher_.GetResult();
-<a name="l00037"></a>00037             error_matcher_. ~ErrorMatcher();
+<a name="l00037"></a>00037             error_matcher_.~ErrorMatcher();
 <a name="l00038"></a>00038         }
 <a name="l00039"></a>00039     }
 <a name="l00040"></a>00040 }
@@ -273,7 +273,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Feb 6 2015 03:17:53 for okmongo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 9 2015 20:29:18 for okmongo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

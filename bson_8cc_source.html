@@ -83,230 +83,323 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="preprocessor">#include &quot;<a class="code" href="bson_8h.html" title="Reading and writing BSON values.">bson.h</a>&quot;</span>
-<a name="l00002"></a>00002 <span class="preprocessor">#include &lt;iostream&gt;</span>
-<a name="l00003"></a>00003 
-<a name="l00004"></a><a class="code" href="namespaceokmongo.html">00004</a> <span class="keyword">namespace </span>okmongo {
-<a name="l00005"></a>00005 
-<a name="l00006"></a>00006 BsonWriter::~BsonWriter() {
-<a name="l00007"></a>00007     <span class="keywordflow">if</span> (!DataIsInline()) {
-<a name="l00008"></a>00008         data_. ~unique_ptr&lt;char[]&gt;();
-<a name="l00009"></a>00009     }
-<a name="l00010"></a>00010 }
-<a name="l00011"></a>00011 
-<a name="l00012"></a><a class="code" href="classokmongo_1_1BsonWriter.html#ae328741a31f276913c4cd80e4d618fc5">00012</a> <span class="keywordtype">void</span> <a class="code" href="classokmongo_1_1BsonWriter.html#ae328741a31f276913c4cd80e4d618fc5" title="Reset the parser to its initial state.">BsonWriter::Clear</a>() {
-<a name="l00013"></a>00013     doc_start_ = 0;
-<a name="l00014"></a>00014     pos_ = 0;
-<a name="l00015"></a>00015 }
-<a name="l00016"></a>00016 
-<a name="l00017"></a><a class="code" href="namespaceokmongo.html#a76ac760423998daf7a0e3ef7d29f66d0">00017</a> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9" title="Used to identify the type of a field in a BSON document.">BsonTag</a> <a class="code" href="namespaceokmongo.html#a76ac760423998daf7a0e3ef7d29f66d0" title="Cast a char to a `BsonTag`.">ToBsonTag</a>(<span class="keywordtype">char</span> c) {
-<a name="l00018"></a>00018     <span class="keywordflow">if</span> (c &lt;= static_cast&lt;signed char&gt;(<a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a22d2c147313c20fad16c1058f512629b" title="Min key.">BsonTag::kMinKey</a>) ||
-<a name="l00019"></a>00019         c &gt;= static_cast&lt;signed char&gt;(<a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9af12a756b8ebaaa202e7534e04ac1a1cd" title="Max key.">BsonTag::kMaxKey</a>)) {
-<a name="l00020"></a>00020         <span class="keywordflow">return</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a22d2c147313c20fad16c1058f512629b" title="Min key.">BsonTag::kMinKey</a>;
-<a name="l00021"></a>00021     }
-<a name="l00022"></a>00022     <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9" title="Used to identify the type of a field in a BSON document.">BsonTag</a> res = <span class="keyword">static_cast&lt;</span><a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9" title="Used to identify the type of a field in a BSON document.">BsonTag</a><span class="keyword">&gt;</span>(c);
-<a name="l00023"></a>00023     <span class="keywordflow">switch</span> (res) {
-<a name="l00024"></a>00024         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9ace778e7f2c39a5aa5e0a2365cb74e16e" title="Ieee 754 double precision float.">BsonTag::kDouble</a>:
-<a name="l00025"></a>00025         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aefb1d704799a73493308b549e1df58af" title="UTF8 string.">BsonTag::kUtf8</a>:
-<a name="l00026"></a>00026         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a68e79e7fd75b9cb9b1ea768dc020b2a5" title="Embedded document.">BsonTag::kDocument</a>:
-<a name="l00027"></a>00027         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9ad21cf35819f3d4355152c25631f31921" title="Array.">BsonTag::kArray</a>:
-<a name="l00028"></a>00028         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a069491e55fabd0c19281d321fb4f4bac" title="Binary data (Not supported)">BsonTag::kBinData</a>:
-<a name="l00029"></a>00029         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a6123106f1a2227ea21ee102754d96eab" title="Mongo Object id.">BsonTag::kObjectId</a>:
-<a name="l00030"></a>00030         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a7257baf38aaab771e7a63265ffc77481" title="Boolean.">BsonTag::kBool</a>:
-<a name="l00031"></a>00031         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a25a5b9456c329cceec7dd593b387f1f0" title="UTC datetime (seconds since epoch)">BsonTag::kUtcDatetime</a>:
-<a name="l00032"></a>00032         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aaf3d19c8bcaa1247a1370792b3dffa08" title="Null value.">BsonTag::kNull</a>:
-<a name="l00033"></a>00033         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9af37072f2962c055d5c21dc5cb3d4cd6f" title="32 bit integer">BsonTag::kInt32</a>:
-<a name="l00034"></a>00034         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aded4392803cd1ac13482df896718ec8f" title="Timestamp (Not supported)">BsonTag::kTimestamp</a>:
-<a name="l00035"></a>00035         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a95ca02149eaa5b92502b0f2d519b2740" title="64 bit integer">BsonTag::kInt64</a>:
-<a name="l00036"></a>00036         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a6b4687295f8b0a3d047be1fa03e0c399" title="Regular expression (Not supported)">BsonTag::kRegexp</a>:
-<a name="l00037"></a>00037         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aa80a85dd60ccb6a384a2b502eaeeeee5" title="Javascript code (Not supported)">BsonTag::kJs</a>:
-<a name="l00038"></a>00038         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9acfe7736ca8d8be25e662c7d8757d73e7" title="Scoped Javascript code (Not supported)">BsonTag::kScopedJs</a>:
-<a name="l00039"></a>00039             <span class="keywordflow">return</span> res;
-<a name="l00040"></a>00040         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a22d2c147313c20fad16c1058f512629b" title="Min key.">BsonTag::kMinKey</a>:
-<a name="l00041"></a>00041         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9af12a756b8ebaaa202e7534e04ac1a1cd" title="Max key.">BsonTag::kMaxKey</a>:
-<a name="l00042"></a>00042             <span class="keywordflow">break</span>;
-<a name="l00043"></a>00043     }
-<a name="l00044"></a>00044     <span class="keywordflow">return</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a22d2c147313c20fad16c1058f512629b" title="Min key.">BsonTag::kMinKey</a>;
-<a name="l00045"></a>00045 }
-<a name="l00046"></a>00046 
-<a name="l00050"></a>00050 <span class="keyword">static</span> int32_t GetValueLength(<a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9" title="Used to identify the type of a field in a BSON document.">BsonTag</a> tag, <span class="keyword">const</span> <span class="keywordtype">char</span> *data, int32_t size) {
-<a name="l00051"></a>00051     int32_t res;
-<a name="l00052"></a>00052     <span class="keywordtype">bool</span> null_terminated = <span class="keyword">false</span>;
-<a name="l00053"></a>00053     <span class="keywordflow">switch</span> (tag) {
-<a name="l00054"></a>00054         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a68e79e7fd75b9cb9b1ea768dc020b2a5" title="Embedded document.">BsonTag::kDocument</a>:
-<a name="l00055"></a>00055         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9ad21cf35819f3d4355152c25631f31921" title="Array.">BsonTag::kArray</a>:
-<a name="l00056"></a>00056             <span class="keywordflow">if</span> (size &lt; static_cast&lt;int32_t&gt;(<span class="keyword">sizeof</span>(int32_t)) + 1) {
-<a name="l00057"></a>00057                 <span class="keywordflow">return</span> -1;
-<a name="l00058"></a>00058             }
-<a name="l00059"></a>00059             std::memcpy(&amp;res, data, <span class="keyword">sizeof</span>(int32_t));
-<a name="l00060"></a>00060             <span class="keywordflow">if</span> (res &lt;= 0) {
-<a name="l00061"></a>00061                 <span class="keywordflow">return</span> -1;
-<a name="l00062"></a>00062             }
-<a name="l00063"></a>00063             null_terminated = <span class="keyword">true</span>;
-<a name="l00064"></a>00064             <span class="keywordflow">break</span>;
-<a name="l00065"></a>00065         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aa80a85dd60ccb6a384a2b502eaeeeee5" title="Javascript code (Not supported)">BsonTag::kJs</a>:
-<a name="l00066"></a>00066         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aefb1d704799a73493308b549e1df58af" title="UTF8 string.">BsonTag::kUtf8</a>:
-<a name="l00067"></a>00067         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a069491e55fabd0c19281d321fb4f4bac" title="Binary data (Not supported)">BsonTag::kBinData</a>:
-<a name="l00068"></a>00068             <span class="keywordflow">if</span> (size &lt; static_cast&lt;int32_t&gt;(<span class="keyword">sizeof</span>(int32_t)) + 1) {
-<a name="l00069"></a>00069                 <span class="keywordflow">return</span> -1;
-<a name="l00070"></a>00070             }
-<a name="l00071"></a>00071             std::memcpy(&amp;res, data, <span class="keyword">sizeof</span>(int32_t));
-<a name="l00072"></a>00072             <span class="keywordflow">if</span> (res &lt;= 0) {
-<a name="l00073"></a>00073                 <span class="keywordflow">return</span> -1;
-<a name="l00074"></a>00074             }
-<a name="l00075"></a>00075             res += 4;
-<a name="l00076"></a>00076             null_terminated = <span class="keyword">true</span>;
-<a name="l00077"></a>00077             <span class="keywordflow">break</span>;
-<a name="l00078"></a>00078         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9ace778e7f2c39a5aa5e0a2365cb74e16e" title="Ieee 754 double precision float.">BsonTag::kDouble</a>:
-<a name="l00079"></a>00079             res = <span class="keyword">sizeof</span>(double);
-<a name="l00080"></a>00080             <span class="keywordflow">break</span>;
-<a name="l00081"></a>00081         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a6123106f1a2227ea21ee102754d96eab" title="Mongo Object id.">BsonTag::kObjectId</a>:
-<a name="l00082"></a>00082             res = 12;
-<a name="l00083"></a>00083             <span class="keywordflow">break</span>;
-<a name="l00084"></a>00084         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a7257baf38aaab771e7a63265ffc77481" title="Boolean.">BsonTag::kBool</a>:
-<a name="l00085"></a>00085             res = 1;
-<a name="l00086"></a>00086             <span class="keywordflow">break</span>;
-<a name="l00087"></a>00087         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9af37072f2962c055d5c21dc5cb3d4cd6f" title="32 bit integer">BsonTag::kInt32</a>:
-<a name="l00088"></a>00088             res = <span class="keyword">sizeof</span>(int32_t);
-<a name="l00089"></a>00089             <span class="keywordflow">break</span>;
-<a name="l00090"></a>00090         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a95ca02149eaa5b92502b0f2d519b2740" title="64 bit integer">BsonTag::kInt64</a>:
-<a name="l00091"></a>00091         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a25a5b9456c329cceec7dd593b387f1f0" title="UTC datetime (seconds since epoch)">BsonTag::kUtcDatetime</a>:
-<a name="l00092"></a>00092         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aded4392803cd1ac13482df896718ec8f" title="Timestamp (Not supported)">BsonTag::kTimestamp</a>:
-<a name="l00093"></a>00093             res = <span class="keyword">sizeof</span>(int64_t);
-<a name="l00094"></a>00094             <span class="keywordflow">break</span>;
-<a name="l00095"></a>00095         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aaf3d19c8bcaa1247a1370792b3dffa08" title="Null value.">BsonTag::kNull</a>:
-<a name="l00096"></a>00096             res = 0;
-<a name="l00097"></a>00097             <span class="keywordflow">break</span>;
-<a name="l00098"></a>00098         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a6b4687295f8b0a3d047be1fa03e0c399" title="Regular expression (Not supported)">BsonTag::kRegexp</a>:
-<a name="l00099"></a>00099         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9acfe7736ca8d8be25e662c7d8757d73e7" title="Scoped Javascript code (Not supported)">BsonTag::kScopedJs</a>:
-<a name="l00100"></a>00100         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a22d2c147313c20fad16c1058f512629b" title="Min key.">BsonTag::kMinKey</a>:
-<a name="l00101"></a>00101         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9af12a756b8ebaaa202e7534e04ac1a1cd" title="Max key.">BsonTag::kMaxKey</a>:
-<a name="l00102"></a>00102             <span class="keywordflow">return</span> -1;
-<a name="l00103"></a>00103     }
-<a name="l00104"></a>00104     <span class="keywordflow">if</span> (res &gt; size) {
-<a name="l00105"></a>00105         <span class="keywordflow">return</span> -1;
-<a name="l00106"></a>00106     }
-<a name="l00107"></a>00107     <span class="keywordflow">if</span> (null_terminated &amp;&amp; data[res - 1] != <span class="charliteral">&#39;\000&#39;</span>) {
-<a name="l00108"></a>00108         <span class="keywordflow">return</span> -1;
-<a name="l00109"></a>00109     }
-<a name="l00110"></a>00110     <span class="keywordflow">return</span> res;
-<a name="l00111"></a>00111 }
-<a name="l00112"></a>00112 
-<a name="l00113"></a>00113 <span class="comment">// Random access interface...</span>
-<a name="l00114"></a>00114 BsonValue::BsonValue(<span class="keyword">const</span> <span class="keywordtype">char</span> *data, int32_t size, <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9" title="Used to identify the type of a field in a BSON document.">BsonTag</a> tag)
-<a name="l00115"></a>00115     : BsonValue() {
-<a name="l00116"></a>00116     <span class="keyword">const</span> int32_t real_size = GetValueLength(tag, data, size);
-<a name="l00117"></a>00117     <span class="keywordflow">if</span> (real_size == -1) {
-<a name="l00118"></a>00118         <span class="keywordflow">return</span>;
-<a name="l00119"></a>00119     }
-<a name="l00120"></a>00120     data_ = data;
-<a name="l00121"></a>00121     tag_ = tag;
-<a name="l00122"></a>00122     size_ = real_size;
-<a name="l00123"></a>00123 }
-<a name="l00124"></a>00124 
-<a name="l00125"></a>00125 <span class="comment">// For documents...</span>
-<a name="l00126"></a>00126 BsonValue BsonValue::GetField(<span class="keyword">const</span> <span class="keywordtype">char</span> *needle)<span class="keyword"> const </span>{
-<a name="l00127"></a>00127     <span class="keywordflow">if</span> (tag_ != <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a68e79e7fd75b9cb9b1ea768dc020b2a5" title="Embedded document.">BsonTag::kDocument</a>) {
-<a name="l00128"></a>00128         <span class="keywordflow">return</span> BsonValue();
-<a name="l00129"></a>00129     }
-<a name="l00130"></a>00130     <span class="keyword">const</span> <span class="keywordtype">char</span> *end = data_ + size_;
-<a name="l00131"></a>00131     <span class="keyword">const</span> <span class="keywordtype">char</span> *curs = data_ + <span class="keyword">sizeof</span>(int32_t);
-<a name="l00132"></a>00132     <span class="keywordflow">while</span> (curs &lt; end) {
-<a name="l00133"></a>00133         <span class="keyword">const</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9" title="Used to identify the type of a field in a BSON document.">BsonTag</a> tag = <a class="code" href="namespaceokmongo.html#a76ac760423998daf7a0e3ef7d29f66d0" title="Cast a char to a `BsonTag`.">ToBsonTag</a>(*curs);
-<a name="l00134"></a>00134         <span class="keywordflow">if</span> (tag == <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a22d2c147313c20fad16c1058f512629b" title="Min key.">BsonTag::kMinKey</a>) {
-<a name="l00135"></a>00135             <span class="keywordflow">return</span> BsonValue();
-<a name="l00136"></a>00136         }
-<a name="l00137"></a>00137         ++curs;
-<a name="l00138"></a>00138         <span class="keyword">const</span> <span class="keywordtype">char</span> *match_cpy = needle;
-<a name="l00139"></a>00139         <span class="keywordflow">while</span> (*curs == *match_cpy &amp;&amp; *curs) {
-<a name="l00140"></a>00140             ++curs;
-<a name="l00141"></a>00141             ++match_cpy;
-<a name="l00142"></a>00142             <span class="keywordflow">if</span> (curs &gt;= end - 1) {
-<a name="l00143"></a>00143                 <span class="keywordflow">return</span> BsonValue();
-<a name="l00144"></a>00144             }
-<a name="l00145"></a>00145         }
-<a name="l00146"></a>00146         <span class="keyword">const</span> <span class="keywordtype">bool</span> matched = *curs == <span class="charliteral">&#39;\000&#39;</span> &amp;&amp; *match_cpy == <span class="charliteral">&#39;\000&#39;</span>;
-<a name="l00147"></a>00147         <span class="keywordflow">while</span> (*curs) {
-<a name="l00148"></a>00148             ++curs;
-<a name="l00149"></a>00149             <span class="keywordflow">if</span> (curs &gt;= end - 1) {
-<a name="l00150"></a>00150                 <span class="keywordflow">return</span> BsonValue();
-<a name="l00151"></a>00151             }
-<a name="l00152"></a>00152         }
-<a name="l00153"></a>00153         ++curs;
-<a name="l00154"></a>00154         <span class="keyword">const</span> int32_t size =
-<a name="l00155"></a>00155                 GetValueLength(tag, curs, static_cast&lt;int32_t&gt;(end - curs));
-<a name="l00156"></a>00156         <span class="keywordflow">if</span> (size == -1) {
-<a name="l00157"></a>00157             <span class="keywordflow">return</span> BsonValue();
-<a name="l00158"></a>00158         }
-<a name="l00159"></a>00159         <span class="keywordflow">if</span> (matched) {
-<a name="l00160"></a>00160             BsonValue res;
-<a name="l00161"></a>00161             res.data_ = curs;
-<a name="l00162"></a>00162             res.tag_ = tag;
-<a name="l00163"></a>00163             res.size_ = size;
-<a name="l00164"></a>00164             <span class="keywordflow">return</span> res;
-<a name="l00165"></a>00165         }
-<a name="l00166"></a>00166         curs += size;
-<a name="l00167"></a>00167     }
-<a name="l00168"></a>00168     <span class="keywordflow">return</span> BsonValue();
-<a name="l00169"></a>00169 }
-<a name="l00170"></a>00170 
-<a name="l00171"></a>00171 <span class="keywordtype">void</span> BsonValueIt::Invalidate() {
-<a name="l00172"></a>00172     data_ = <span class="keyword">nullptr</span>;
-<a name="l00173"></a>00173     tag_ = <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a22d2c147313c20fad16c1058f512629b" title="Min key.">BsonTag::kMinKey</a>;
-<a name="l00174"></a>00174     size_ = 0;
-<a name="l00175"></a>00175     key_ = <span class="keyword">nullptr</span>;
+<a name="l00002"></a>00002 
+<a name="l00003"></a><a class="code" href="namespaceokmongo.html">00003</a> <span class="keyword">namespace </span>okmongo {
+<a name="l00004"></a>00004 
+<a name="l00005"></a>00005 BsonWriter::~BsonWriter() {
+<a name="l00006"></a>00006     <span class="keywordflow">if</span> (!DataIsInline()) {
+<a name="l00007"></a>00007         data_.~unique_ptr&lt;<span class="keywordtype">char</span>[]&gt;();
+<a name="l00008"></a>00008     }
+<a name="l00009"></a>00009 }
+<a name="l00010"></a>00010 
+<a name="l00011"></a><a class="code" href="classokmongo_1_1BsonWriter.html#ae328741a31f276913c4cd80e4d618fc5">00011</a> <span class="keywordtype">void</span> <a class="code" href="classokmongo_1_1BsonWriter.html#ae328741a31f276913c4cd80e4d618fc5" title="Reset the parser to its initial state.">BsonWriter::Clear</a>() {
+<a name="l00012"></a>00012     doc_start_ = 0;
+<a name="l00013"></a>00013     pos_ = 0;
+<a name="l00014"></a>00014 }
+<a name="l00015"></a>00015 
+<a name="l00016"></a><a class="code" href="namespaceokmongo.html#a76ac760423998daf7a0e3ef7d29f66d0">00016</a> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9" title="Used to identify the type of a field in a BSON document.">BsonTag</a> <a class="code" href="namespaceokmongo.html#a76ac760423998daf7a0e3ef7d29f66d0" title="Cast a char to a `BsonTag`.">ToBsonTag</a>(<span class="keywordtype">char</span> c) {
+<a name="l00017"></a>00017     <span class="keywordflow">if</span> (c &lt;= static_cast&lt;signed char&gt;(<a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a22d2c147313c20fad16c1058f512629b" title="Min key.">BsonTag::kMinKey</a>) ||
+<a name="l00018"></a>00018         c &gt;= static_cast&lt;signed char&gt;(<a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9af12a756b8ebaaa202e7534e04ac1a1cd" title="Max key.">BsonTag::kMaxKey</a>)) {
+<a name="l00019"></a>00019         <span class="keywordflow">return</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a22d2c147313c20fad16c1058f512629b" title="Min key.">BsonTag::kMinKey</a>;
+<a name="l00020"></a>00020     }
+<a name="l00021"></a>00021     <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9" title="Used to identify the type of a field in a BSON document.">BsonTag</a> res = <span class="keyword">static_cast&lt;</span><a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9" title="Used to identify the type of a field in a BSON document.">BsonTag</a><span class="keyword">&gt;</span>(c);
+<a name="l00022"></a>00022     <span class="keywordflow">switch</span> (res) {
+<a name="l00023"></a>00023         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9ace778e7f2c39a5aa5e0a2365cb74e16e" title="Ieee 754 double precision float.">BsonTag::kDouble</a>:
+<a name="l00024"></a>00024         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aefb1d704799a73493308b549e1df58af" title="UTF8 string.">BsonTag::kUtf8</a>:
+<a name="l00025"></a>00025         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a68e79e7fd75b9cb9b1ea768dc020b2a5" title="Embedded document.">BsonTag::kDocument</a>:
+<a name="l00026"></a>00026         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9ad21cf35819f3d4355152c25631f31921" title="Array.">BsonTag::kArray</a>:
+<a name="l00027"></a>00027         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a08f26a3711a03137b019eef5c349207f" title="Binary data.">BsonTag::kBindata</a>:
+<a name="l00028"></a>00028         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a6123106f1a2227ea21ee102754d96eab" title="Mongo Object id.">BsonTag::kObjectId</a>:
+<a name="l00029"></a>00029         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a7257baf38aaab771e7a63265ffc77481" title="Boolean.">BsonTag::kBool</a>:
+<a name="l00030"></a>00030         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a25a5b9456c329cceec7dd593b387f1f0" title="UTC datetime (seconds since epoch)">BsonTag::kUtcDatetime</a>:
+<a name="l00031"></a>00031         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aaf3d19c8bcaa1247a1370792b3dffa08" title="Null value.">BsonTag::kNull</a>:
+<a name="l00032"></a>00032         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9af37072f2962c055d5c21dc5cb3d4cd6f" title="32 bit integer">BsonTag::kInt32</a>:
+<a name="l00033"></a>00033         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aded4392803cd1ac13482df896718ec8f" title="Timestamp (Used internally by mongo in the logs.">BsonTag::kTimestamp</a>:
+<a name="l00034"></a>00034         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a95ca02149eaa5b92502b0f2d519b2740" title="64 bit integer">BsonTag::kInt64</a>:
+<a name="l00035"></a>00035         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a6b4687295f8b0a3d047be1fa03e0c399" title="Regular expression (Not supported)">BsonTag::kRegexp</a>:
+<a name="l00036"></a>00036         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aa80a85dd60ccb6a384a2b502eaeeeee5" title="Javascript code (Not supported)">BsonTag::kJs</a>:
+<a name="l00037"></a>00037         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9acfe7736ca8d8be25e662c7d8757d73e7" title="Scoped Javascript code (Not supported)">BsonTag::kScopedJs</a>:
+<a name="l00038"></a>00038             <span class="keywordflow">return</span> res;
+<a name="l00039"></a>00039         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a22d2c147313c20fad16c1058f512629b" title="Min key.">BsonTag::kMinKey</a>:
+<a name="l00040"></a>00040         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9af12a756b8ebaaa202e7534e04ac1a1cd" title="Max key.">BsonTag::kMaxKey</a>:
+<a name="l00041"></a>00041             <span class="keywordflow">break</span>;
+<a name="l00042"></a>00042     }
+<a name="l00043"></a>00043     <span class="keywordflow">return</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a22d2c147313c20fad16c1058f512629b" title="Min key.">BsonTag::kMinKey</a>;
+<a name="l00044"></a>00044 }
+<a name="l00045"></a>00045 
+<a name="l00050"></a>00050 <span class="keyword">static</span> int32_t TagLengthOffset(<a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9" title="Used to identify the type of a field in a BSON document.">BsonTag</a> tag) {
+<a name="l00051"></a>00051     <span class="keywordflow">switch</span> (tag) {
+<a name="l00052"></a>00052         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aa80a85dd60ccb6a384a2b502eaeeeee5" title="Javascript code (Not supported)">BsonTag::kJs</a>:
+<a name="l00053"></a>00053         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aefb1d704799a73493308b549e1df58af" title="UTF8 string.">BsonTag::kUtf8</a>:
+<a name="l00054"></a>00054             <span class="keywordflow">return</span> 4;  <span class="comment">// length</span>
+<a name="l00055"></a>00055         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a08f26a3711a03137b019eef5c349207f" title="Binary data.">BsonTag::kBindata</a>:
+<a name="l00056"></a>00056             <span class="keywordflow">return</span> 5;  <span class="comment">// length + subtype</span>
+<a name="l00057"></a>00057         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a68e79e7fd75b9cb9b1ea768dc020b2a5" title="Embedded document.">BsonTag::kDocument</a>:
+<a name="l00058"></a>00058         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9ad21cf35819f3d4355152c25631f31921" title="Array.">BsonTag::kArray</a>:
+<a name="l00059"></a>00059         <span class="keywordflow">default</span>:
+<a name="l00060"></a>00060             <span class="keywordflow">return</span> 0;
+<a name="l00061"></a>00061     }
+<a name="l00062"></a>00062 }
+<a name="l00066"></a>00066 <span class="keyword">static</span> int32_t GetValueLength(<a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9" title="Used to identify the type of a field in a BSON document.">BsonTag</a> tag, <span class="keyword">const</span> <span class="keywordtype">char</span> *data, int32_t size) {
+<a name="l00067"></a>00067     int32_t res;
+<a name="l00068"></a>00068     <span class="keywordtype">bool</span> null_terminated = <span class="keyword">false</span>;
+<a name="l00069"></a>00069     <span class="keywordflow">switch</span> (tag) {
+<a name="l00070"></a>00070         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a68e79e7fd75b9cb9b1ea768dc020b2a5" title="Embedded document.">BsonTag::kDocument</a>:
+<a name="l00071"></a>00071         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9ad21cf35819f3d4355152c25631f31921" title="Array.">BsonTag::kArray</a>:
+<a name="l00072"></a>00072         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aa80a85dd60ccb6a384a2b502eaeeeee5" title="Javascript code (Not supported)">BsonTag::kJs</a>:
+<a name="l00073"></a>00073         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aefb1d704799a73493308b549e1df58af" title="UTF8 string.">BsonTag::kUtf8</a>:
+<a name="l00074"></a>00074         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a08f26a3711a03137b019eef5c349207f" title="Binary data.">BsonTag::kBindata</a>:
+<a name="l00075"></a>00075             <span class="keywordflow">if</span> (size &lt; static_cast&lt;int32_t&gt;(<span class="keyword">sizeof</span>(int32_t)) + 1) {
+<a name="l00076"></a>00076                 <span class="keywordflow">return</span> -1;
+<a name="l00077"></a>00077             }
+<a name="l00078"></a>00078             std::memcpy(&amp;res, data, <span class="keyword">sizeof</span>(int32_t));
+<a name="l00079"></a>00079             <span class="keywordflow">if</span> (res &lt;= 0) {
+<a name="l00080"></a>00080                 <span class="keywordflow">return</span> -1;
+<a name="l00081"></a>00081             }
+<a name="l00082"></a>00082             res += TagLengthOffset(tag);
+<a name="l00083"></a>00083             null_terminated = (tag != <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a08f26a3711a03137b019eef5c349207f" title="Binary data.">BsonTag::kBindata</a>);
+<a name="l00084"></a>00084             <span class="keywordflow">break</span>;
+<a name="l00085"></a>00085         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9ace778e7f2c39a5aa5e0a2365cb74e16e" title="Ieee 754 double precision float.">BsonTag::kDouble</a>:
+<a name="l00086"></a>00086             res = <span class="keyword">sizeof</span>(double);
+<a name="l00087"></a>00087             <span class="keywordflow">break</span>;
+<a name="l00088"></a>00088         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a6123106f1a2227ea21ee102754d96eab" title="Mongo Object id.">BsonTag::kObjectId</a>:
+<a name="l00089"></a>00089             res = 12;
+<a name="l00090"></a>00090             <span class="keywordflow">break</span>;
+<a name="l00091"></a>00091         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a7257baf38aaab771e7a63265ffc77481" title="Boolean.">BsonTag::kBool</a>:
+<a name="l00092"></a>00092             res = 1;
+<a name="l00093"></a>00093             <span class="keywordflow">break</span>;
+<a name="l00094"></a>00094         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9af37072f2962c055d5c21dc5cb3d4cd6f" title="32 bit integer">BsonTag::kInt32</a>:
+<a name="l00095"></a>00095             res = <span class="keyword">sizeof</span>(int32_t);
+<a name="l00096"></a>00096             <span class="keywordflow">break</span>;
+<a name="l00097"></a>00097         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a95ca02149eaa5b92502b0f2d519b2740" title="64 bit integer">BsonTag::kInt64</a>:
+<a name="l00098"></a>00098         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a25a5b9456c329cceec7dd593b387f1f0" title="UTC datetime (seconds since epoch)">BsonTag::kUtcDatetime</a>:
+<a name="l00099"></a>00099         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aded4392803cd1ac13482df896718ec8f" title="Timestamp (Used internally by mongo in the logs.">BsonTag::kTimestamp</a>:
+<a name="l00100"></a>00100             res = <span class="keyword">sizeof</span>(int64_t);
+<a name="l00101"></a>00101             <span class="keywordflow">break</span>;
+<a name="l00102"></a>00102         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aaf3d19c8bcaa1247a1370792b3dffa08" title="Null value.">BsonTag::kNull</a>:
+<a name="l00103"></a>00103             res = 0;
+<a name="l00104"></a>00104             <span class="keywordflow">break</span>;
+<a name="l00105"></a>00105         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a6b4687295f8b0a3d047be1fa03e0c399" title="Regular expression (Not supported)">BsonTag::kRegexp</a>:
+<a name="l00106"></a>00106         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9acfe7736ca8d8be25e662c7d8757d73e7" title="Scoped Javascript code (Not supported)">BsonTag::kScopedJs</a>:
+<a name="l00107"></a>00107         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a22d2c147313c20fad16c1058f512629b" title="Min key.">BsonTag::kMinKey</a>:
+<a name="l00108"></a>00108         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9af12a756b8ebaaa202e7534e04ac1a1cd" title="Max key.">BsonTag::kMaxKey</a>:
+<a name="l00109"></a>00109             <span class="keywordflow">return</span> -1;
+<a name="l00110"></a>00110     }
+<a name="l00111"></a>00111     <span class="keywordflow">if</span> (res &gt; size) {
+<a name="l00112"></a>00112         <span class="keywordflow">return</span> -1;
+<a name="l00113"></a>00113     }
+<a name="l00114"></a>00114     <span class="keywordflow">if</span> (null_terminated &amp;&amp; data[res - 1] != <span class="charliteral">&#39;\000&#39;</span>) {
+<a name="l00115"></a>00115         <span class="keywordflow">return</span> -1;
+<a name="l00116"></a>00116     }
+<a name="l00117"></a>00117     <span class="keywordflow">return</span> res;
+<a name="l00118"></a>00118 }
+<a name="l00119"></a>00119 
+<a name="l00120"></a>00120 <span class="comment">// Random access interface...</span>
+<a name="l00121"></a>00121 BsonValue::BsonValue(<span class="keyword">const</span> <span class="keywordtype">char</span> *data, int32_t size, <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9" title="Used to identify the type of a field in a BSON document.">BsonTag</a> tag)
+<a name="l00122"></a>00122     : BsonValue() {
+<a name="l00123"></a>00123     <span class="keyword">const</span> int32_t real_size = GetValueLength(tag, data, size);
+<a name="l00124"></a>00124     <span class="keywordflow">if</span> (real_size == -1) {
+<a name="l00125"></a>00125         <span class="keywordflow">return</span>;
+<a name="l00126"></a>00126     }
+<a name="l00127"></a>00127     data_ = data;
+<a name="l00128"></a>00128     tag_ = tag;
+<a name="l00129"></a>00129     size_ = real_size;
+<a name="l00130"></a>00130 }
+<a name="l00131"></a>00131 
+<a name="l00132"></a>00132 <span class="keyword">namespace </span>{
+<a name="l00133"></a>00133     <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, BsonTag Tgt, T fallback&gt;
+<a name="l00134"></a>00134     T GetV(<span class="keyword">const</span> BsonValue &amp;b, <span class="keyword">const</span> <span class="keywordtype">char</span> *data) {
+<a name="l00135"></a>00135         <span class="keywordflow">if</span> (b.Tag() != Tgt) {
+<a name="l00136"></a>00136             <span class="keywordflow">return</span> fallback;
+<a name="l00137"></a>00137         }
+<a name="l00138"></a>00138         T retval;
+<a name="l00139"></a>00139         std::memcpy(&amp;retval, data, <span class="keyword">sizeof</span>(T));
+<a name="l00140"></a>00140         <span class="keywordflow">return</span> retval;
+<a name="l00141"></a>00141     }  <span class="comment">// namespace</span>
+<a name="l00142"></a>00142 
+<a name="l00143"></a>00143     <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, BsonTag Tgt&gt;
+<a name="l00144"></a>00144     <span class="keywordtype">bool</span> GetV(<span class="keyword">const</span> BsonValue &amp;b, <span class="keyword">const</span> <span class="keywordtype">char</span> *data, T *out) {
+<a name="l00145"></a>00145         <span class="keywordflow">if</span> (b.Tag() != Tgt) {
+<a name="l00146"></a>00146             <span class="keywordflow">return</span> <span class="keyword">false</span>;
+<a name="l00147"></a>00147         }
+<a name="l00148"></a>00148         std::memcpy(out, data, <span class="keyword">sizeof</span>(T));
+<a name="l00149"></a>00149         <span class="keywordflow">return</span> <span class="keyword">true</span>;
+<a name="l00150"></a>00150     }
+<a name="l00151"></a>00151 }  <span class="comment">// namespace</span>
+<a name="l00152"></a>00152 
+<a name="l00153"></a>00153 int64_t BsonValue::GetInt64()<span class="keyword"> const </span>{
+<a name="l00154"></a>00154     <span class="keywordflow">return</span> GetV&lt;int64_t, <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a95ca02149eaa5b92502b0f2d519b2740" title="64 bit integer">BsonTag::kInt64</a>, -1&gt;(*<span class="keyword">this</span>, data_);
+<a name="l00155"></a>00155 }
+<a name="l00156"></a>00156 
+<a name="l00157"></a>00157 int64_t BsonValue::GetTimestamp()<span class="keyword"> const </span>{
+<a name="l00158"></a>00158     <span class="keywordflow">return</span> GetV&lt;int64_t, <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aded4392803cd1ac13482df896718ec8f" title="Timestamp (Used internally by mongo in the logs.">BsonTag::kTimestamp</a>, -1&gt;(*<span class="keyword">this</span>, data_);
+<a name="l00159"></a>00159 }
+<a name="l00160"></a>00160 
+<a name="l00161"></a>00161 int64_t BsonValue::GetUtcDatetime()<span class="keyword"> const </span>{
+<a name="l00162"></a>00162     <span class="keywordflow">return</span> GetV&lt;int64_t, <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a25a5b9456c329cceec7dd593b387f1f0" title="UTC datetime (seconds since epoch)">BsonTag::kUtcDatetime</a>, -1&gt;(*<span class="keyword">this</span>, data_);
+<a name="l00163"></a>00163 }
+<a name="l00164"></a>00164 
+<a name="l00165"></a>00165 int32_t BsonValue::GetInt32()<span class="keyword"> const </span>{
+<a name="l00166"></a>00166     <span class="keywordflow">return</span> GetV&lt;int32_t, <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9af37072f2962c055d5c21dc5cb3d4cd6f" title="32 bit integer">BsonTag::kInt32</a>, -1&gt;(*<span class="keyword">this</span>, data_);
+<a name="l00167"></a>00167 }
+<a name="l00168"></a>00168 
+<a name="l00169"></a>00169 <span class="keywordtype">double</span> BsonValue::GetDouble()<span class="keyword"> const </span>{
+<a name="l00170"></a>00170     <span class="keywordtype">double</span> retv;
+<a name="l00171"></a>00171     <span class="keywordflow">if</span> (!GetV&lt;double, BsonTag::kDouble&gt;(*<span class="keyword">this</span>, data_, &amp;retv)) {
+<a name="l00172"></a>00172         <span class="keywordflow">return</span> std::numeric_limits&lt;double&gt;::quiet_NaN();
+<a name="l00173"></a>00173     } <span class="keywordflow">else</span> {
+<a name="l00174"></a>00174         <span class="keywordflow">return</span> retv;
+<a name="l00175"></a>00175     }
 <a name="l00176"></a>00176 }
 <a name="l00177"></a>00177 
-<a name="l00178"></a>00178 <span class="keywordtype">void</span> BsonValueIt::MoveTo(<span class="keyword">const</span> <span class="keywordtype">char</span> *curs) {
-<a name="l00179"></a>00179     <span class="keywordflow">if</span> (curs &gt;= end_ - 1) {
-<a name="l00180"></a>00180         <span class="comment">// Error</span>
-<a name="l00181"></a>00181         <span class="keywordflow">return</span> Invalidate();
-<a name="l00182"></a>00182     }
-<a name="l00183"></a>00183     <span class="keyword">const</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9" title="Used to identify the type of a field in a BSON document.">BsonTag</a> tag = <a class="code" href="namespaceokmongo.html#a76ac760423998daf7a0e3ef7d29f66d0" title="Cast a char to a `BsonTag`.">ToBsonTag</a>(*curs);
-<a name="l00184"></a>00184     <span class="keywordflow">if</span> (tag == <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a22d2c147313c20fad16c1058f512629b" title="Min key.">BsonTag::kMinKey</a>) {
-<a name="l00185"></a>00185         <span class="keywordflow">return</span> Invalidate();
-<a name="l00186"></a>00186     }
-<a name="l00187"></a>00187     ++curs;
-<a name="l00188"></a>00188     <span class="keyword">const</span> <span class="keywordtype">char</span> *key = curs;
-<a name="l00189"></a>00189     <span class="keywordflow">while</span> (*curs) {
-<a name="l00190"></a>00190         ++curs;
-<a name="l00191"></a>00191         <span class="keywordflow">if</span> (curs &gt;= end_ - 1) {
-<a name="l00192"></a>00192             <span class="keywordflow">return</span> Invalidate();
-<a name="l00193"></a>00193         }
-<a name="l00194"></a>00194     }
-<a name="l00195"></a>00195 
-<a name="l00196"></a>00196     ++curs;
-<a name="l00197"></a>00197 
-<a name="l00198"></a>00198     <span class="keyword">auto</span> size =
-<a name="l00199"></a>00199             GetValueLength(tag, curs, static_cast&lt;int32_t&gt;(end_ - curs) - 1);
-<a name="l00200"></a>00200 
-<a name="l00201"></a>00201     <span class="keywordflow">if</span> (size == -1) {
-<a name="l00202"></a>00202         <span class="keywordflow">return</span> Invalidate();
-<a name="l00203"></a>00203     }
-<a name="l00204"></a>00204 
-<a name="l00205"></a>00205     data_ = curs;
-<a name="l00206"></a>00206     tag_ = tag;
-<a name="l00207"></a>00207     size_ = size;
-<a name="l00208"></a>00208     key_ = key;
-<a name="l00209"></a>00209 }
-<a name="l00210"></a>00210 
-<a name="l00211"></a>00211 BsonValueIt::BsonValueIt() { Invalidate(); }
-<a name="l00212"></a>00212 
-<a name="l00213"></a>00213 BsonValueIt::BsonValueIt(<span class="keyword">const</span> BsonValue &amp;v) {
-<a name="l00214"></a>00214     <span class="keywordflow">if</span> (v.tag() != <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9ad21cf35819f3d4355152c25631f31921" title="Array.">BsonTag::kArray</a> &amp;&amp; v.tag() != <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a68e79e7fd75b9cb9b1ea768dc020b2a5" title="Embedded document.">BsonTag::kDocument</a>) {
-<a name="l00215"></a>00215         Invalidate();
-<a name="l00216"></a>00216         <span class="keywordflow">return</span>;
-<a name="l00217"></a>00217     }
-<a name="l00218"></a>00218     end_ = v.data() + v.size();
-<a name="l00219"></a>00219     MoveTo(v.data() + <span class="keyword">sizeof</span>(int32_t));
-<a name="l00220"></a>00220 }
-<a name="l00221"></a>00221 
-<a name="l00222"></a>00222 <span class="keywordtype">void</span> BsonValueIt::next() {
-<a name="l00223"></a>00223     <span class="keywordflow">if</span> (!Empty()) {
-<a name="l00224"></a>00224         MoveTo(data_ + size_);
-<a name="l00225"></a>00225     }
-<a name="l00226"></a>00226 }
-<a name="l00227"></a>00227 
-<a name="l00228"></a>00228 }  <span class="comment">// namespace okmongo</span>
+<a name="l00178"></a>00178 <a class="code" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2" title="Subtype for binary data.">BindataSubtype</a> BsonValue::GetBinSubstype()<span class="keyword"> const </span>{
+<a name="l00179"></a>00179     <span class="keywordflow">if</span> (tag_ == <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a08f26a3711a03137b019eef5c349207f" title="Binary data.">BsonTag::kBindata</a>) {
+<a name="l00180"></a>00180         <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span><a class="code" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2" title="Subtype for binary data.">BindataSubtype</a><span class="keyword">&gt;</span>(data_[4]);
+<a name="l00181"></a>00181     }
+<a name="l00182"></a>00182     <span class="keywordflow">return</span> <a class="code" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2aab41a6e8ed87c5d03c00795a20ce8627" title="Generic binary subtype.">BindataSubtype::kGeneric</a>;
+<a name="l00183"></a>00183 }
+<a name="l00184"></a>00184 
+<a name="l00185"></a>00185 <span class="keywordtype">bool</span> BsonValue::GetBool()<span class="keyword"> const </span>{
+<a name="l00186"></a>00186     <span class="keywordflow">return</span> GetV&lt;char, BsonTag::kBool, 0&gt;(*<span class="keyword">this</span>, data_) == 1;
+<a name="l00187"></a>00187 }
+<a name="l00188"></a>00188 
+<a name="l00189"></a>00189 <span class="keyword">const</span> <span class="keywordtype">char</span> *BsonValue::GetData()<span class="keyword"> const </span>{
+<a name="l00190"></a>00190     <span class="keywordflow">switch</span> (tag_) {
+<a name="l00191"></a>00191         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a6123106f1a2227ea21ee102754d96eab" title="Mongo Object id.">BsonTag::kObjectId</a>:
+<a name="l00192"></a>00192             <span class="keywordflow">return</span> data_;
+<a name="l00193"></a>00193         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aefb1d704799a73493308b549e1df58af" title="UTF8 string.">BsonTag::kUtf8</a>:
+<a name="l00194"></a>00194         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aa80a85dd60ccb6a384a2b502eaeeeee5" title="Javascript code (Not supported)">BsonTag::kJs</a>:
+<a name="l00195"></a>00195             <span class="keywordflow">return</span> data_ + 4;
+<a name="l00196"></a>00196         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a08f26a3711a03137b019eef5c349207f" title="Binary data.">BsonTag::kBindata</a>:
+<a name="l00197"></a>00197             <span class="keywordflow">return</span> data_ + 5;
+<a name="l00198"></a>00198         <span class="keywordflow">default</span>:
+<a name="l00199"></a>00199             <span class="keywordflow">return</span> <span class="keyword">nullptr</span>;
+<a name="l00200"></a>00200     }
+<a name="l00201"></a>00201 }
+<a name="l00202"></a>00202 
+<a name="l00203"></a>00203 int32_t BsonValue::GetDataSize()<span class="keyword"> const </span>{
+<a name="l00204"></a>00204     <span class="keywordflow">switch</span> (tag_) {
+<a name="l00205"></a>00205         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a6123106f1a2227ea21ee102754d96eab" title="Mongo Object id.">BsonTag::kObjectId</a>:
+<a name="l00206"></a>00206             <span class="keywordflow">return</span> 9;
+<a name="l00207"></a>00207         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aefb1d704799a73493308b549e1df58af" title="UTF8 string.">BsonTag::kUtf8</a>:
+<a name="l00208"></a>00208         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9aa80a85dd60ccb6a384a2b502eaeeeee5" title="Javascript code (Not supported)">BsonTag::kJs</a>:
+<a name="l00209"></a>00209         <span class="keywordflow">case</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a08f26a3711a03137b019eef5c349207f" title="Binary data.">BsonTag::kBindata</a>:
+<a name="l00210"></a>00210             <span class="keywordflow">return</span> size_ - 5;
+<a name="l00211"></a>00211         <span class="keywordflow">default</span>:
+<a name="l00212"></a>00212             <span class="keywordflow">return</span> -1;
+<a name="l00213"></a>00213     }
+<a name="l00214"></a>00214 }
+<a name="l00215"></a>00215 
+<a name="l00216"></a>00216 <span class="comment">// For documents...</span>
+<a name="l00217"></a>00217 BsonValue BsonValue::GetField(<span class="keyword">const</span> <span class="keywordtype">char</span> *needle)<span class="keyword"> const </span>{
+<a name="l00218"></a>00218     <span class="keywordflow">if</span> (tag_ != <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a68e79e7fd75b9cb9b1ea768dc020b2a5" title="Embedded document.">BsonTag::kDocument</a>) {
+<a name="l00219"></a>00219         <span class="keywordflow">return</span> BsonValue();
+<a name="l00220"></a>00220     }
+<a name="l00221"></a>00221     <span class="keyword">const</span> <span class="keywordtype">char</span> *end = data_ + size_;
+<a name="l00222"></a>00222     <span class="keyword">const</span> <span class="keywordtype">char</span> *curs = data_ + <span class="keyword">sizeof</span>(int32_t);
+<a name="l00223"></a>00223     <span class="keywordflow">while</span> (curs &lt; end) {
+<a name="l00224"></a>00224         <span class="keyword">const</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9" title="Used to identify the type of a field in a BSON document.">BsonTag</a> tag = <a class="code" href="namespaceokmongo.html#a76ac760423998daf7a0e3ef7d29f66d0" title="Cast a char to a `BsonTag`.">ToBsonTag</a>(*curs);
+<a name="l00225"></a>00225         <span class="keywordflow">if</span> (tag == <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a22d2c147313c20fad16c1058f512629b" title="Min key.">BsonTag::kMinKey</a>) {
+<a name="l00226"></a>00226             <span class="keywordflow">return</span> BsonValue();
+<a name="l00227"></a>00227         }
+<a name="l00228"></a>00228         ++curs;
+<a name="l00229"></a>00229         <span class="keyword">const</span> <span class="keywordtype">char</span> *match_cpy = needle;
+<a name="l00230"></a>00230         <span class="keywordflow">while</span> (*curs == *match_cpy &amp;&amp; *curs) {
+<a name="l00231"></a>00231             ++curs;
+<a name="l00232"></a>00232             ++match_cpy;
+<a name="l00233"></a>00233             <span class="keywordflow">if</span> (curs &gt;= end - 1) {
+<a name="l00234"></a>00234                 <span class="keywordflow">return</span> BsonValue();
+<a name="l00235"></a>00235             }
+<a name="l00236"></a>00236         }
+<a name="l00237"></a>00237         <span class="keyword">const</span> <span class="keywordtype">bool</span> matched = *curs == <span class="charliteral">&#39;\000&#39;</span> &amp;&amp; *match_cpy == <span class="charliteral">&#39;\000&#39;</span>;
+<a name="l00238"></a>00238         <span class="keywordflow">while</span> (*curs) {
+<a name="l00239"></a>00239             ++curs;
+<a name="l00240"></a>00240             <span class="keywordflow">if</span> (curs &gt;= end - 1) {
+<a name="l00241"></a>00241                 <span class="keywordflow">return</span> BsonValue();
+<a name="l00242"></a>00242             }
+<a name="l00243"></a>00243         }
+<a name="l00244"></a>00244         ++curs;
+<a name="l00245"></a>00245         <span class="keyword">const</span> int32_t size =
+<a name="l00246"></a>00246                 GetValueLength(tag, curs, static_cast&lt;int32_t&gt;(end - curs));
+<a name="l00247"></a>00247         <span class="keywordflow">if</span> (size == -1) {
+<a name="l00248"></a>00248             <span class="keywordflow">return</span> BsonValue();
+<a name="l00249"></a>00249         }
+<a name="l00250"></a>00250         <span class="keywordflow">if</span> (matched) {
+<a name="l00251"></a>00251             BsonValue res;
+<a name="l00252"></a>00252             res.data_ = curs;
+<a name="l00253"></a>00253             res.tag_ = tag;
+<a name="l00254"></a>00254             res.size_ = size;
+<a name="l00255"></a>00255             <span class="keywordflow">return</span> res;
+<a name="l00256"></a>00256         }
+<a name="l00257"></a>00257         curs += size;
+<a name="l00258"></a>00258     }
+<a name="l00259"></a>00259     <span class="keywordflow">return</span> BsonValue();
+<a name="l00260"></a>00260 }
+<a name="l00261"></a>00261 
+<a name="l00262"></a>00262 <span class="keywordtype">void</span> BsonValueIt::Invalidate() {
+<a name="l00263"></a>00263     data_ = <span class="keyword">nullptr</span>;
+<a name="l00264"></a>00264     tag_ = <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a22d2c147313c20fad16c1058f512629b" title="Min key.">BsonTag::kMinKey</a>;
+<a name="l00265"></a>00265     size_ = 0;
+<a name="l00266"></a>00266     key_ = <span class="keyword">nullptr</span>;
+<a name="l00267"></a>00267 }
+<a name="l00268"></a>00268 
+<a name="l00269"></a>00269 <span class="keywordtype">bool</span> BsonValueIt::MoveTo(<span class="keyword">const</span> <span class="keywordtype">char</span> *curs) {
+<a name="l00270"></a>00270     <span class="keywordflow">if</span> (curs == end_ - 1 &amp;&amp; *curs == <span class="charliteral">&#39;\000&#39;</span>) {
+<a name="l00271"></a>00271         Invalidate();
+<a name="l00272"></a>00272         <span class="keywordflow">return</span> <span class="keyword">true</span>;
+<a name="l00273"></a>00273     }
+<a name="l00274"></a>00274     <span class="keywordflow">if</span> (curs &gt;= end_ - 1) {
+<a name="l00275"></a>00275         Invalidate();
+<a name="l00276"></a>00276         <span class="keywordflow">return</span> <span class="keyword">false</span>;
+<a name="l00277"></a>00277     }
+<a name="l00278"></a>00278     <span class="keyword">const</span> <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9" title="Used to identify the type of a field in a BSON document.">BsonTag</a> tag = <a class="code" href="namespaceokmongo.html#a76ac760423998daf7a0e3ef7d29f66d0" title="Cast a char to a `BsonTag`.">ToBsonTag</a>(*curs);
+<a name="l00279"></a>00279     <span class="keywordflow">if</span> (tag == <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a22d2c147313c20fad16c1058f512629b" title="Min key.">BsonTag::kMinKey</a>) {
+<a name="l00280"></a>00280         Invalidate();
+<a name="l00281"></a>00281         <span class="keywordflow">return</span> <span class="keyword">false</span>;
+<a name="l00282"></a>00282     }
+<a name="l00283"></a>00283     ++curs;
+<a name="l00284"></a>00284     <span class="keyword">const</span> <span class="keywordtype">char</span> *key = curs;
+<a name="l00285"></a>00285     <span class="keywordflow">while</span> (*curs) {
+<a name="l00286"></a>00286         ++curs;
+<a name="l00287"></a>00287         <span class="keywordflow">if</span> (curs &gt;= end_ - 1) {
+<a name="l00288"></a>00288             Invalidate();
+<a name="l00289"></a>00289             <span class="keywordflow">return</span> <span class="keyword">false</span>;
+<a name="l00290"></a>00290         }
+<a name="l00291"></a>00291     }
+<a name="l00292"></a>00292     ++curs;
+<a name="l00293"></a>00293     <span class="keyword">auto</span> size = GetValueLength(tag, curs, static_cast&lt;int32_t&gt;(end_ - curs));
+<a name="l00294"></a>00294 
+<a name="l00295"></a>00295     <span class="keywordflow">if</span> (size == -1) {
+<a name="l00296"></a>00296         Invalidate();
+<a name="l00297"></a>00297         <span class="keywordflow">return</span> <span class="keyword">false</span>;
+<a name="l00298"></a>00298     }
+<a name="l00299"></a>00299 
+<a name="l00300"></a>00300     data_ = curs;
+<a name="l00301"></a>00301     tag_ = tag;
+<a name="l00302"></a>00302     size_ = size;
+<a name="l00303"></a>00303     key_ = key;
+<a name="l00304"></a>00304     <span class="keywordflow">return</span> <span class="keyword">true</span>;
+<a name="l00305"></a>00305 }
+<a name="l00306"></a>00306 
+<a name="l00307"></a>00307 BsonValueIt::BsonValueIt() { Invalidate(); }
+<a name="l00308"></a>00308 
+<a name="l00309"></a>00309 BsonValueIt::BsonValueIt(<span class="keyword">const</span> BsonValue &amp;v) {
+<a name="l00310"></a>00310     <span class="keywordflow">if</span> (v.Tag() != <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9ad21cf35819f3d4355152c25631f31921" title="Array.">BsonTag::kArray</a> &amp;&amp; v.Tag() != <a class="code" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a68e79e7fd75b9cb9b1ea768dc020b2a5" title="Embedded document.">BsonTag::kDocument</a>) {
+<a name="l00311"></a>00311         Invalidate();
+<a name="l00312"></a>00312         <span class="keywordflow">return</span>;
+<a name="l00313"></a>00313     }
+<a name="l00314"></a>00314     end_ = v.data_ + v.size_;
+<a name="l00315"></a>00315     MoveTo(v.data_ + <span class="keyword">sizeof</span>(int32_t));
+<a name="l00316"></a>00316 }
+<a name="l00317"></a>00317 
+<a name="l00318"></a>00318 <span class="keywordtype">bool</span> BsonValueIt::next() {
+<a name="l00319"></a>00319     <span class="keywordflow">if</span> (!Done()) {
+<a name="l00320"></a>00320         <span class="keywordflow">return</span> MoveTo(data_ + size_);
+<a name="l00321"></a>00321     }
+<a name="l00322"></a>00322     <span class="keywordflow">return</span> <span class="keyword">false</span>;
+<a name="l00323"></a>00323 }
+<a name="l00324"></a>00324 
+<a name="l00325"></a>00325 }  <span class="comment">// namespace okmongo</span>
 </pre></div></div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -325,7 +418,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Feb 6 2015 03:17:53 for okmongo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 9 2015 20:29:18 for okmongo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

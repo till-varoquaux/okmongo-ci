@@ -128,7 +128,7 @@ Enumerations</h2></td></tr>
 <a class="el" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a68e79e7fd75b9cb9b1ea768dc020b2a5">kDocument</a> =  '\x03', 
 <a class="el" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9ad21cf35819f3d4355152c25631f31921">kArray</a> =  '\x04', 
 <br/>
-&#160;&#160;<a class="el" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a069491e55fabd0c19281d321fb4f4bac">kBinData</a> =  '\x05', 
+&#160;&#160;<a class="el" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a08f26a3711a03137b019eef5c349207f">kBindata</a> =  '\x05', 
 <a class="el" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a6123106f1a2227ea21ee102754d96eab">kObjectId</a> =  '\x07', 
 <a class="el" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a7257baf38aaab771e7a63265ffc77481">kBool</a> =  '\x08', 
 <a class="el" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a25a5b9456c329cceec7dd593b387f1f0">kUtcDatetime</a> =  '\x09', 
@@ -147,6 +147,19 @@ Enumerations</h2></td></tr>
 <br/>
  }</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to identify the type of a field in a BSON document.  <a href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9">More...</a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2">BindataSubtype</a> { <br/>
+&#160;&#160;<a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2aab41a6e8ed87c5d03c00795a20ce8627">kGeneric</a> =  '\x00', 
+<a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2a6487c9434f7a0045c178c1d80e9c979c">kFunction</a> =  '\x01', 
+<a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2a032f590d20e9e4bab34a442eda131034">kBinary</a> =  '\x02', 
+<a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2a2d8a3a67103825cea603c763520d289c">kUuidOld</a> =  '\x03', 
+<br/>
+&#160;&#160;<a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2a127bd69bbf602323ebb399575c6ae373">kUuid</a> =  '\x04', 
+<a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2a621f536153d520f16b43ae5e8d84c617">kMd5</a> =  '\x05', 
+<a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2ada225c21aee22d747d91c407b9d6c204">kMinCustom</a> =  0x80, 
+<b>kMaxCustom</b> =  0xFF
+<br/>
+ }</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Subtype for binary data.  <a href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2">More...</a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceokmongo.html#ad9882029fdf58e87882eda84543d409a">MongoOpcode</a> { <br/>
 &#160;&#160;<a class="el" href="namespaceokmongo.html#ad9882029fdf58e87882eda84543d409aa696bbcc72739c8fcdb966ddd0e96ea91">kReply</a> =  1, 
 <a class="el" href="namespaceokmongo.html#ad9882029fdf58e87882eda84543d409aa81437be4605c2134b0e86251ab08b105">kMsg</a> =  1000, 
@@ -255,8 +268,8 @@ Variables</h2></td></tr>
 <tr><td valign="top"><em><a class="anchor" id="ab35d3ed391bd1e501a7a6a53d1136cb9ad21cf35819f3d4355152c25631f31921"></a><!-- doxytag: member="kArray" ref="ab35d3ed391bd1e501a7a6a53d1136cb9ad21cf35819f3d4355152c25631f31921" args="" -->kArray</em>&nbsp;</td><td>
 <p>Array. </p>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" id="ab35d3ed391bd1e501a7a6a53d1136cb9a069491e55fabd0c19281d321fb4f4bac"></a><!-- doxytag: member="kBinData" ref="ab35d3ed391bd1e501a7a6a53d1136cb9a069491e55fabd0c19281d321fb4f4bac" args="" -->kBinData</em>&nbsp;</td><td>
-<p>Binary data (Not supported) </p>
+<tr><td valign="top"><em><a class="anchor" id="ab35d3ed391bd1e501a7a6a53d1136cb9a08f26a3711a03137b019eef5c349207f"></a><!-- doxytag: member="kBindata" ref="ab35d3ed391bd1e501a7a6a53d1136cb9a08f26a3711a03137b019eef5c349207f" args="" -->kBindata</em>&nbsp;</td><td>
+<p>Binary data. </p>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="ab35d3ed391bd1e501a7a6a53d1136cb9a6123106f1a2227ea21ee102754d96eab"></a><!-- doxytag: member="kObjectId" ref="ab35d3ed391bd1e501a7a6a53d1136cb9a6123106f1a2227ea21ee102754d96eab" args="" -->kObjectId</em>&nbsp;</td><td>
 <p>Mongo Object id. </p>
@@ -283,7 +296,8 @@ Variables</h2></td></tr>
 <p>32 bit integer </p>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="ab35d3ed391bd1e501a7a6a53d1136cb9aded4392803cd1ac13482df896718ec8f"></a><!-- doxytag: member="kTimestamp" ref="ab35d3ed391bd1e501a7a6a53d1136cb9aded4392803cd1ac13482df896718ec8f" args="" -->kTimestamp</em>&nbsp;</td><td>
-<p>Timestamp (Not supported) </p>
+<p>Timestamp (Used internally by mongo in the logs. </p>
+<p>Use a UtcDatetime if you want a real timestamp). </p>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="ab35d3ed391bd1e501a7a6a53d1136cb9a95ca02149eaa5b92502b0f2d519b2740"></a><!-- doxytag: member="kInt64" ref="ab35d3ed391bd1e501a7a6a53d1136cb9a95ca02149eaa5b92502b0f2d519b2740" args="" -->kInt64</em>&nbsp;</td><td>
 <p>64 bit integer </p>
@@ -298,7 +312,52 @@ Variables</h2></td></tr>
 </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="bson_8h_source.html#l00026">26</a> of file <a class="el" href="bson_8h_source.html">bson.h</a>.</p>
+<p>Definition at line <a class="el" href="bson_8h_source.html#l00025">25</a> of file <a class="el" href="bson_8h_source.html">bson.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6b497ce5986adb2c0cdb815fb2c5f1f2"></a><!-- doxytag: member="okmongo::BindataSubtype" ref="a6b497ce5986adb2c0cdb815fb2c5f1f2" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2">okmongo::BindataSubtype</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Subtype for binary data. </p>
+<dl><dt><b>Enumerator: </b></dt><dd><table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" id="a6b497ce5986adb2c0cdb815fb2c5f1f2aab41a6e8ed87c5d03c00795a20ce8627"></a><!-- doxytag: member="kGeneric" ref="a6b497ce5986adb2c0cdb815fb2c5f1f2aab41a6e8ed87c5d03c00795a20ce8627" args="" -->kGeneric</em>&nbsp;</td><td>
+<p>Generic binary subtype. </p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="a6b497ce5986adb2c0cdb815fb2c5f1f2a6487c9434f7a0045c178c1d80e9c979c"></a><!-- doxytag: member="kFunction" ref="a6b497ce5986adb2c0cdb815fb2c5f1f2a6487c9434f7a0045c178c1d80e9c979c" args="" -->kFunction</em>&nbsp;</td><td>
+<p>Function. </p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="a6b497ce5986adb2c0cdb815fb2c5f1f2a032f590d20e9e4bab34a442eda131034"></a><!-- doxytag: member="kBinary" ref="a6b497ce5986adb2c0cdb815fb2c5f1f2a032f590d20e9e4bab34a442eda131034" args="" -->kBinary</em>&nbsp;</td><td>
+<p>Binary (Old) This used to be the default subtype, but was deprecated in favor of \x00. </p>
+<p>Drivers and tools should be sure to handle \x02 appropriately. The structure of the binary data (the byte* array in the binary non-terminal) must be an int32 followed by a (byte*). The int32 is the number of bytes in the repetition. </p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="a6b497ce5986adb2c0cdb815fb2c5f1f2a2d8a3a67103825cea603c763520d289c"></a><!-- doxytag: member="kUuidOld" ref="a6b497ce5986adb2c0cdb815fb2c5f1f2a2d8a3a67103825cea603c763520d289c" args="" -->kUuidOld</em>&nbsp;</td><td>
+<p>UUID (Old) This used to be the UUID subtype, but was deprecated in favor of \x04. </p>
+<p>Drivers and tools for languages with a native UUID type should handle \x03 appropriately. </p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="a6b497ce5986adb2c0cdb815fb2c5f1f2a127bd69bbf602323ebb399575c6ae373"></a><!-- doxytag: member="kUuid" ref="a6b497ce5986adb2c0cdb815fb2c5f1f2a127bd69bbf602323ebb399575c6ae373" args="" -->kUuid</em>&nbsp;</td><td>
+<p>UUID. </p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="a6b497ce5986adb2c0cdb815fb2c5f1f2a621f536153d520f16b43ae5e8d84c617"></a><!-- doxytag: member="kMd5" ref="a6b497ce5986adb2c0cdb815fb2c5f1f2a621f536153d520f16b43ae5e8d84c617" args="" -->kMd5</em>&nbsp;</td><td>
+<p>MD5. </p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="a6b497ce5986adb2c0cdb815fb2c5f1f2ada225c21aee22d747d91c407b9d6c204"></a><!-- doxytag: member="kMinCustom" ref="a6b497ce5986adb2c0cdb815fb2c5f1f2ada225c21aee22d747d91c407b9d6c204" args="" -->kMinCustom</em>&nbsp;</td><td>
+<p>Lowest tag acceptable for user defined subtypes. </p>
+<p>The binary data can be anything. </p>
+</td></tr>
+</table>
+</dd>
+</dl>
+
+<p>Definition at line <a class="el" href="bson_8h_source.html#l00053">53</a> of file <a class="el" href="bson_8h_source.html">bson.h</a>.</p>
 
 </div>
 </div>
@@ -396,7 +455,7 @@ Variables</h2></td></tr>
 <p>Cast a char to a `BsonTag`. </p>
 <dl class="return"><dt><b>Returns:</b></dt><dd>`BsonTag<a class="el" href="namespaceokmongo.html#ab35d3ed391bd1e501a7a6a53d1136cb9a22d2c147313c20fad16c1058f512629b" title="Min key.">kMinKey</a>` if the input was not a valid `BsonTag` </dd></dl>
 
-<p>Definition at line <a class="el" href="bson_8cc_source.html#l00017">17</a> of file <a class="el" href="bson_8cc_source.html">bson.cc</a>.</p>
+<p>Definition at line <a class="el" href="bson_8cc_source.html#l00016">16</a> of file <a class="el" href="bson_8cc_source.html">bson.cc</a>.</p>
 
 </div>
 </div>
@@ -415,7 +474,7 @@ Variables</h2></td></tr>
 <p>The maximum number of documents allowed in one write command. </p>
 <p>Can be obtained from the db via: `db.isMaster().maxWriteBatchSize` </p>
 
-<p>Definition at line <a class="el" href="mongo_8h_source.html#l00378">378</a> of file <a class="el" href="mongo_8h_source.html">mongo.h</a>.</p>
+<p>Definition at line <a class="el" href="mongo_8h_source.html#l00376">376</a> of file <a class="el" href="mongo_8h_source.html">mongo.h</a>.</p>
 
 </div>
 </div>
@@ -437,7 +496,7 @@ Variables</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Feb 6 2015 03:17:53 for okmongo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 9 2015 20:29:18 for okmongo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

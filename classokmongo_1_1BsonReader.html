@@ -153,7 +153,7 @@ int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of bytes read... <br/></td></tr>
 <tr><td colspan="2"><h2><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="classokmongo_1_1BsonReader.html#a8b355d18dc8e3a76dfcdd11a646e2ac9">State</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classokmongo_1_1BsonReader.html#abfee2407cd247e2f1024b10aea21e4c7">kInitialState</a> = State::kReadDocument</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="classokmongo_1_1BsonReader.html#a8b355d18dc8e3a76dfcdd11a646e2ac9">State</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classokmongo_1_1BsonReader.html#abfee2407cd247e2f1024b10aea21e4c7">kInitialState</a> = State::kReadInt32</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">State the parser starts in.  <a href="#abfee2407cd247e2f1024b10aea21e4c7"></a><br/></td></tr>
 <tr><td colspan="2"><h2><a name="pro-types"></a>
 Protected Types</h2></td></tr>
@@ -165,21 +165,20 @@ Protected Types</h2></td></tr>
 <br/>
 &#160;&#160;<b>kReadDouble</b>, 
 <b>kReadBool</b>, 
-<b>kReadStringLen</b>, 
 <b>kReadString</b>, 
+<b>kReadStringTerm</b>, 
 <br/>
-&#160;&#160;<b>kReadStringTerm</b>, 
-<b>kReadDocument</b>, 
+&#160;&#160;<b>kReadBinSubtype</b>, 
 <b>kReadObjectId</b>, 
 <b>kDone</b>, 
+<b>kError</b>, 
 <br/>
-&#160;&#160;<b>kError</b>, 
-<a class="el" href="classokmongo_1_1BsonReader.html#a8b355d18dc8e3a76dfcdd11a646e2ac9adf744ce834efca65193ef769ba597f5b">kHdr</a>, 
+&#160;&#160;<a class="el" href="classokmongo_1_1BsonReader.html#a8b355d18dc8e3a76dfcdd11a646e2ac9adf744ce834efca65193ef769ba597f5b">kHdr</a>, 
 <a class="el" href="classokmongo_1_1BsonReader.html#a8b355d18dc8e3a76dfcdd11a646e2ac9a1b809fa097183f23543fd70e6c576e7c">kUsr1</a>, 
 <a class="el" href="classokmongo_1_1BsonReader.html#a8b355d18dc8e3a76dfcdd11a646e2ac9ab2cf88c1e92c6342308b6c84b9ef8950">kUsr2</a>, 
+<a class="el" href="classokmongo_1_1BsonReader.html#a8b355d18dc8e3a76dfcdd11a646e2ac9aea91f003b2907ad82719c44c378182e6">kUsr3</a>, 
 <br/>
-&#160;&#160;<a class="el" href="classokmongo_1_1BsonReader.html#a8b355d18dc8e3a76dfcdd11a646e2ac9aea91f003b2907ad82719c44c378182e6">kUsr3</a>, 
-<a class="el" href="classokmongo_1_1BsonReader.html#a8b355d18dc8e3a76dfcdd11a646e2ac9afcfa97462b1d3ded5a6df078790c251b">kUsr4</a>
+&#160;&#160;<a class="el" href="classokmongo_1_1BsonReader.html#a8b355d18dc8e3a76dfcdd11a646e2ac9afcfa97462b1d3ded5a6df078790c251b">kUsr4</a>
 <br/>
  }</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">State the DFA is in...  <a href="classokmongo_1_1BsonReader.html#a8b355d18dc8e3a76dfcdd11a646e2ac9">More...</a><br/></td></tr>
@@ -219,6 +218,8 @@ const char *&#160;</td><td class="memItemRight" valign="bottom"><b>ConsumeValueI
 const char *&#160;</td><td class="memItemRight" valign="bottom"><b>ConsumeValueInt64Cnt</b> (const char *s, const char *end, int64_t t)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf80dc17f18a14685518d5eed60c504fe"></a><!-- doxytag: member="okmongo::BsonReader::ConsumeValueInt64" ref="gaf80dc17f18a14685518d5eed60c504fe" args="(const char *s, const char *end)" -->
 const char *&#160;</td><td class="memItemRight" valign="bottom"><b>ConsumeValueInt64</b> (const char *s, const char *end)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga6f5a18b50ee04d651bd5638c98e0f7b7"></a><!-- doxytag: member="okmongo::BsonReader::ConsumeValueBinSubtype" ref="ga6f5a18b50ee04d651bd5638c98e0f7b7" args="(const char *s, const char *end)" -->
+const char *&#160;</td><td class="memItemRight" valign="bottom"><b>ConsumeValueBinSubtype</b> (const char *s, const char *end)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf67501c07fe03afa1ed2009e22677104"></a><!-- doxytag: member="okmongo::BsonReader::ConsumeValueBool" ref="gaf67501c07fe03afa1ed2009e22677104" args="(const char *s, const char *end)" -->
 const char *&#160;</td><td class="memItemRight" valign="bottom"><b>ConsumeValueBool</b> (const char *s, const char *end)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga6fea63410739c4ce4b5b139f72d200d4"></a><!-- doxytag: member="okmongo::BsonReader::ConsumeValueDoubleCnt" ref="ga6fea63410739c4ce4b5b139f72d200d4" args="(const char *s, const char *end, double d)" -->
@@ -229,14 +230,6 @@ const char *&#160;</td><td class="memItemRight" valign="bottom"><b>ConsumeValueD
 const char *&#160;</td><td class="memItemRight" valign="bottom"><b>ConsumeValueStringTerm</b> (const char *s, const char *end)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga754fce4f83ac4340fb020b18bedd4cc7"></a><!-- doxytag: member="okmongo::BsonReader::ConsumeValueString" ref="ga754fce4f83ac4340fb020b18bedd4cc7" args="(const char *s, const char *end)" -->
 const char *&#160;</td><td class="memItemRight" valign="bottom"><b>ConsumeValueString</b> (const char *s, const char *end)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga6a9ca1fe43fed48f075ab1167f3bba22"></a><!-- doxytag: member="okmongo::BsonReader::ConsumeValueStringLen" ref="ga6a9ca1fe43fed48f075ab1167f3bba22" args="(const char *s, const char *end)" -->
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>ConsumeValueStringLen</b> (const char *s, const char *end)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga6d11ec970196b8c47733eeb24e7999a2"></a><!-- doxytag: member="okmongo::BsonReader::ConsumeValueStringLenCnt" ref="ga6d11ec970196b8c47733eeb24e7999a2" args="(const char *s, const char *end, int32_t len)" -->
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>ConsumeValueStringLenCnt</b> (const char *s, const char *end, int32_t len)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga9aa0bb8f5591c7fca59f5434c25d1116"></a><!-- doxytag: member="okmongo::BsonReader::ConsumeValueDocumentCnt" ref="ga9aa0bb8f5591c7fca59f5434c25d1116" args="(const char *s, const char *end, int32_t)" -->
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>ConsumeValueDocumentCnt</b> (const char *s, const char *end, int32_t)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf67e53d2b23394ab7679830fc6b148b5"></a><!-- doxytag: member="okmongo::BsonReader::ConsumeValueDocument" ref="gaf67e53d2b23394ab7679830fc6b148b5" args="(const char *s, const char *end)" -->
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>ConsumeValueDocument</b> (const char *s, const char *end)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gadf2de66f55004c1c589c909f1fbdf7cc"></a><!-- doxytag: member="okmongo::BsonReader::ConsumeValue" ref="gadf2de66f55004c1c589c909f1fbdf7cc" args="(const char *s, const char *end)" -->
 const char *&#160;</td><td class="memItemRight" valign="bottom"><b>ConsumeValue</b> (const char *s, const char *end)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga4171b7729db0eb33bb70fef9d33e753e"></a><!-- doxytag: member="okmongo::BsonReader::ConsumeValueObjectId" ref="ga4171b7729db0eb33bb70fef9d33e753e" args="(const char *s, const char *end)" -->
@@ -268,6 +261,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>EmitDouble</b> (doubl
 void&#160;</td><td class="memItemRight" valign="bottom"><b>EmitNull</b> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gadd54cf59b4d25e480f4aaad584208f9a"></a><!-- doxytag: member="okmongo::BsonReader::EmitUtf8" ref="gadd54cf59b4d25e480f4aaad584208f9a" args="(const char *, int32_t)" -->
 void&#160;</td><td class="memItemRight" valign="bottom"><b>EmitUtf8</b> (const char *, int32_t)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga51847a8363933f458512aea7d1bca75b"></a><!-- doxytag: member="okmongo::BsonReader::EmitBindataSubtype" ref="ga51847a8363933f458512aea7d1bca75b" args="(BindataSubtype)" -->
+void&#160;</td><td class="memItemRight" valign="bottom"><b>EmitBindataSubtype</b> (<a class="el" href="namespaceokmongo.html#a6b497ce5986adb2c0cdb815fb2c5f1f2">BindataSubtype</a>)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf9ebbe3f0ebe45127cfb7d62bae522e3"></a><!-- doxytag: member="okmongo::BsonReader::EmitBindata" ref="gaf9ebbe3f0ebe45127cfb7d62bae522e3" args="(const char *, int32_t)" -->
+void&#160;</td><td class="memItemRight" valign="bottom"><b>EmitBindata</b> (const char *, int32_t)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga8c7f57bd79590c7c8598199dc7fb640b"></a><!-- doxytag: member="okmongo::BsonReader::EmitJs" ref="ga8c7f57bd79590c7c8598199dc7fb640b" args="(const char *, int32_t)" -->
 void&#160;</td><td class="memItemRight" valign="bottom"><b>EmitJs</b> (const char *, int32_t)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga3d403725335ba170a659b989f7541917"></a><!-- doxytag: member="okmongo::BsonReader::EmitUtcDatetime" ref="ga3d403725335ba170a659b989f7541917" args="(const int64_t)" -->
@@ -301,7 +298,7 @@ class okmongo::BsonReader&lt; Implementation &gt;</h3>
 
 <p>The BSON reader is a reentrant state machine that uses CRTP for the callbacks. </p>
 
-<p>Definition at line <a class="el" href="bson_8h_source.html#l00278">278</a> of file <a class="el" href="bson_8h_source.html">bson.h</a>.</p>
+<p>Definition at line <a class="el" href="bson_8h_source.html#l00308">308</a> of file <a class="el" href="bson_8h_source.html">bson.h</a>.</p>
 </div><hr/><h2>Member Enumeration Documentation</h2>
 <a class="anchor" id="a8b355d18dc8e3a76dfcdd11a646e2ac9"></a><!-- doxytag: member="okmongo::BsonReader::State" ref="a8b355d18dc8e3a76dfcdd11a646e2ac9" args="" -->
 <div class="memitem">
@@ -337,7 +334,7 @@ template&lt;typename Implementation&gt; </div>
 </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="bson_8h_source.html#l00302">302</a> of file <a class="el" href="bson_8h_source.html">bson.h</a>.</p>
+<p>Definition at line <a class="el" href="bson_8h_source.html#l00332">332</a> of file <a class="el" href="bson_8h_source.html">bson.h</a>.</p>
 
 </div>
 </div>
@@ -363,7 +360,7 @@ template&lt;typename T &gt; </div>
 
 <p>Reimplemented in <a class="el" href="classokmongo_1_1ResponseReader.html#af6fa77556655e0a468ce834eaeba3ef5">okmongo::ResponseReader&lt; Implementation &gt;</a>, and <a class="el" href="classokmongo_1_1ResponseReader.html#af6fa77556655e0a468ce834eaeba3ef5">okmongo::ResponseReader&lt; OpResponseParser &gt;</a>.</p>
 
-<p>Definition at line <a class="el" href="bson_8h_source.html#l00761">761</a> of file <a class="el" href="bson_8h_source.html">bson.h</a>.</p>
+<p>Definition at line <a class="el" href="bson_8h_source.html#l00808">808</a> of file <a class="el" href="bson_8h_source.html">bson.h</a>.</p>
 
 </div>
 </div>
@@ -375,18 +372,18 @@ template&lt;typename T &gt; </div>
 template&lt;typename Implementation&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">constexpr <a class="el" href="classokmongo_1_1BsonReader.html#a8b355d18dc8e3a76dfcdd11a646e2ac9">State</a> <a class="el" href="classokmongo_1_1BsonReader.html">okmongo::BsonReader</a>&lt; Implementation &gt;::<a class="el" href="classokmongo_1_1BsonReader.html#abfee2407cd247e2f1024b10aea21e4c7">kInitialState</a> = State::kReadDocument<code> [static]</code></td>
+          <td class="memname">constexpr <a class="el" href="classokmongo_1_1BsonReader.html#a8b355d18dc8e3a76dfcdd11a646e2ac9">State</a> <a class="el" href="classokmongo_1_1BsonReader.html">okmongo::BsonReader</a>&lt; Implementation &gt;::<a class="el" href="classokmongo_1_1BsonReader.html#abfee2407cd247e2f1024b10aea21e4c7">kInitialState</a> = State::kReadInt32<code> [static]</code></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
 <p>State the parser starts in. </p>
-<p>Override this via CRTP to define custom parsers that start in a different State. </p>
+<p>Override this via CRTP to define custom parsers that start in a different State. (Initially set to int32 for the length of a document). </p>
 
 <p>Reimplemented in <a class="el" href="classokmongo_1_1ResponseReader.html#aa6b43364cbb2e83314b888329ec2eb5c">okmongo::ResponseReader&lt; Implementation &gt;</a>, and <a class="el" href="classokmongo_1_1ResponseReader.html#aa6b43364cbb2e83314b888329ec2eb5c">okmongo::ResponseReader&lt; OpResponseParser &gt;</a>.</p>
 
-<p>Definition at line <a class="el" href="bson_8h_source.html#l00346">346</a> of file <a class="el" href="bson_8h_source.html">bson.h</a>.</p>
+<p>Definition at line <a class="el" href="bson_8h_source.html#l00376">376</a> of file <a class="el" href="bson_8h_source.html">bson.h</a>.</p>
 
 </div>
 </div>
@@ -411,7 +408,7 @@ template&lt;typename Implementation&gt; </div>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Feb 6 2015 03:17:53 for okmongo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 9 2015 20:29:18 for okmongo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>
