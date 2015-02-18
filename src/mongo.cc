@@ -131,8 +131,6 @@ void AppendCommandHeader(BsonWriter *w, int32_t requestid, const char *db) {
 
 void AppendWriteConcern(BsonWriter *w) {
     w->PushDocument("WriteConcern");
-    // w->Element("j", true);
-    w->Element("wtimeout", 100);
     w->Element("w", 1);
     w->Pop();
 }
