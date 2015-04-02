@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/till-varoquaux/okmongo-ci.png?label=ready&title=Ready)](https://waffle.io/till-varoquaux/okmongo-ci)
 [![Build Status](https://travis-ci.org/till-varoquaux/okmongo-ci.png?branch=master)](https://travis-ci.org/till-varoquaux/okmongo-ci)
 <!--[![Coverage Status](https://coveralls.io/repos/till-varoquaux/okmongo-ci/badge.svg)](https://coveralls.io/r/till-varoquaux/okmongo-ci)-->
 
